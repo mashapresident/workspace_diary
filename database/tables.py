@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from sqlalchemy import (
     CHAR,
     CheckConstraint,
@@ -31,7 +32,7 @@ class customer(Base):
     address = Column(String(255, "utf8mb4_general_ci"), nullable=False)
     mail = Column(String(50, "utf8mb4_general_ci"), nullable=False)
     date_of_birth = Column(Date, nullable=False)
-    
+
     def __init__(self, name, surname, phone, address, mail, date_of_birth):
         self.name = name
         self.surname = surname
@@ -39,7 +40,7 @@ class customer(Base):
         self.address = address
         self.mail = mail
         self.date_of_birth = date_of_birth
-        
+
     @property
     def fullname(self):
         return f"{self.name} {self.surname}"
@@ -89,20 +90,6 @@ class stuff_group(Base):
     )
     group_id = Column(Integer, ForeignKey("groups_list.id"), primary_key=True)
 
-# class stuff_group(Base):
-#     __tablename__ = "stuff_group"
-#     stuff_id = Column(
-#         Integer,
-#         ForeignKey("stuff.id", ondelete="CASCADE", onupdate="CASCADE"),
-#         nullable=False,  # Указывает, что поле не может быть NULL
-#     )
-#     group_id = Column(
-#         Integer,
-#         ForeignKey("groups_list.id"),
-#         nullable=False,
-#     )
-#     stuff_id = relationship("stuff")
-#     group_id = relationship("groups_list")
 
 class stuff(Base):
     __tablename__ = "stuff"
@@ -128,18 +115,17 @@ class stuff(Base):
     password = Column(CHAR(10, "utf8mb4_general_ci"), nullable=False)
 
     roles_list = relationship("roles_list")
-    
-    
+
     def __init__(
-    self,
-    name: str,
-    surname: str,
-    role: str,
-    phone: str,
-    address: str,
-    mail: str,
-    date_of_birth: str
-):
+        self,
+        name: str,
+        surname: str,
+        role: str,
+        phone: str,
+        address: str,
+        mail: str,
+        date_of_birth: str,
+    ):
         self.name = name
         self.surname = surname
         self.role = role
@@ -148,7 +134,9 @@ class stuff(Base):
         self.mail = mail
         self.date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d").date()
         from managers.password_generator import password_generator
+
         self.password = password_generator.generate_password
+
     @property
     def fullname(self):
         return self.surname + " " + self.name
