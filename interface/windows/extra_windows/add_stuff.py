@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from interface.widgets.buttons import button, icon_button
+from interface.widgets.buttons import button
 from interface.widgets.message import message
 from interface.widgets.qlines import datepicker, email_line, parent_line, phone_line
 from managers.DAO_classes import stuff_DAO
@@ -20,8 +20,6 @@ from managers.DAO_classes import stuff_DAO
 class add_stuff(QMainWindow):
     def __init__(self):
         super().__init__()
-
-        self.back_button = icon_button("./interface/assets/back_button.png")
 
         self.surname_line = parent_line("Прізвище")
 
@@ -50,9 +48,6 @@ class add_stuff(QMainWindow):
         self.verticalLayoutWidget = QVBoxLayout(self.centralwidget)
         self.verticalLayoutWidget.setSpacing(20)
         self.verticalLayoutWidget.setContentsMargins(0, 60, 0, 60)
-        self.verticalLayoutWidget.addWidget(
-            self.back_button, alignment=Qt.AlignTop | Qt.AlignLeft
-        )
         self.verticalLayoutWidget.addWidget(self.surname_line, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.name_line, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.phone, alignment=Qt.AlignCenter)
