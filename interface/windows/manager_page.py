@@ -1,11 +1,16 @@
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import (
-    QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QPushButton
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
 )
 
+from database.tables import stuff
 from interface.widgets.buttons import icon_button
 from interface.widgets.text import text
-from database.tables import stuff
 from managers.DAO_classes import project_DAO
 from managers.window_manager import window_manager
 
@@ -31,6 +36,7 @@ class manager_page(QMainWindow):
         self.add_customer = icon_button("./interface/assets/add_stuff.png")
         self.add_project = icon_button("./interface/assets/add_project.png")
         self.add_group = icon_button("./interface/assets/add_group.png")
+        self.make_report = icon_button("./interface/assets/make_report.png")
 
         # Додати віджети на сторінку
         self.add_widgets()
@@ -50,6 +56,7 @@ class manager_page(QMainWindow):
         top_layout_buttons.addWidget(self.add_customer)
         top_layout_buttons.addWidget(self.add_project)
         top_layout_buttons.addWidget(self.add_group)
+        top_layout_buttons.addWidget(self.make_report)
         self.main_layout.addLayout(top_layout_buttons)
 
         # Основний шар під верхнім
@@ -63,7 +70,9 @@ class manager_page(QMainWindow):
         # Додавання кнопок проєктів
         for project in self.projects_list:
             # Отримати назву проєкту (припускаємо, що це атрибут або ключ словника)
-            button_name = getattr(project, "name", str(project))  # Якщо атрибута `name` немає, перетворюємо на рядок
+            button_name = getattr(
+                project, "name", str(project)
+            )  # Якщо атрибута `name` немає, перетворюємо на рядок
             button = QPushButton(button_name)
             button.clicked.connect(lambda _, btn=button: self.switch_to_text(btn))
             self.button_widgets.append(button)
@@ -93,12 +102,17 @@ class manager_page(QMainWindow):
             button.deleteLater()
 
     def connect_buttons(self):
+        from interface.windows.extra_windows.add_customer import add_customer
+        from interface.windows.extra_windows.add_group import add_group
         from interface.windows.extra_windows.add_project import add_project
         from interface.windows.extra_windows.add_stuff import add_stuff
-        from interface.windows.extra_windows.add_group import add_group
-        from interface.windows.extra_windows.add_customer import add_customer
+        from managers.report_manager import report_manager
+
         # Підключення кнопок до методів відкриття нових сторінок
         self.add_stuff.clicked.connect(lambda: window_manager.go_to_page(add_stuff))
-        self.add_customer.clicked.connect(lambda: window_manager.go_to_page(add_customer))
+        self.add_customer.clicked.connect(
+            lambda: window_manager.go_to_page(add_customer)
+        )
         self.add_project.clicked.connect(lambda: window_manager.go_to_page(add_project))
         self.add_group.clicked.connect(lambda: window_manager.go_to_page(add_group))
+        self.make_report.clicked.connect(report_manager.make_report)

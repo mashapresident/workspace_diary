@@ -2,15 +2,16 @@ import os
 
 from openpyxl import Workbook
 
+from interface.widgets.message import message
 from managers.DAO_classes import customer_DAO, project_DAO, tasks_DAO
 
 
 class report_manager:
     @staticmethod
-    def make_report(report_name="report.xlsx"):
+    def make_report():
         """Створює звіт"""
         report = report_manager.get_info()
-        report_manager.create_report(report, report_name)
+        report_manager.create_report(report, "report.xlsx")
 
     @staticmethod
     def get_info():
@@ -103,5 +104,7 @@ class report_manager:
 
         if not os.path.exists("reports"):
             os.makedirs("reports")
-
+        print(filename)
         wb.save("reports/" + filename)
+
+        message.show_message("Звіт сформовано", "Перевірте папку reports")
