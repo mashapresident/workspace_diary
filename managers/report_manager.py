@@ -104,7 +104,6 @@ class report_manager:
 
         if not os.path.exists("reports"):
             os.makedirs("reports")
-        print(filename)
         wb.save("reports/" + filename)
 
         message.show_message("Звіт сформовано", "Перевірте папку reports")
