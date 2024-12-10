@@ -251,6 +251,14 @@ class project_DAO:
                 return session.query(project).all()
         except Exception as e:
             return None
+        
+    @staticmethod
+    def get_first_project():
+        try:
+            with session_factory() as session:
+                return session.query(project).first()
+        except Exception as e:
+            return None
 
     @staticmethod
     def delete_project(project_id):
@@ -344,4 +352,29 @@ class tasks_DAO:
                 return tasks
         except Exception as e:
             print(f"Failed to fetch tasks for project_id {project_id}: {e}")
+            return None
+
+    @staticmethod
+    def get_tasks(stage: str, proj: project, target_role: str):
+        """
+        Повертає завдання для відповідного проекту залежно від ролі.
+        Менеджер отримує всі завдання, інші ролі отримують завдання, пов'язані лише з їх роллю.
+        """
+        try:
+            with session_factory() as session:
+                # Спочатку фільтруємо завдання за проектом
+                query = session.query(task).filter_by(project_id=proj.id)
+
+                # Фільтруємо за стадією, якщо передана
+                if stage:
+                    query = query.filter_by(stage=stage)
+
+                # Логіка залежно від ролі
+                if target_role.lower() != "manager":
+                    query = query.filter_by(role=target_role)
+
+                tasks = query.order_by(task.deadline).all()
+                return tasks
+        except Exception as e:
+            print(f"Failed to fetch tasks for project {proj.id} with role {target_role}: {e}")
             return None

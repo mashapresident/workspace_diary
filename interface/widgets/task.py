@@ -19,7 +19,7 @@ class task(QWidget):
         super().__init__(parent)
         self.setStyleSheet(
             """
-        background-color: rgb(213, 186, 217);
+        background-color: rgb(165, 143, 168);
         border-radius: 5px;
         padding: 5px 10px;
         """

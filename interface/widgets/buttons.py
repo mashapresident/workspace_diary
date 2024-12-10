@@ -28,6 +28,28 @@ class button(QPushButton):
             """
         )
         
+class list_button(QPushButton):
+    def __init__(self, label: str, parent: QWidget = None):
+        super().__init__(label, parent)
+        self.setMaximumSize(QSize(240, 80))
+        self.setMinimumSize(QSize(240, 80))
+        self.setStyleSheet(
+            """ 
+            QPushButton { 
+                background-color: transparent;
+                font: 34pt "Apple Symbols";
+                color: white;
+            }
+            QPushButton[active="true"] {
+                background-color: rgb(92, 92, 92); /* Колір для активної кнопки */
+                border: 1px solid rgb(150, 150, 150);
+            }
+            QPushButton:hover { 
+                background-color: rgb(69, 69, 69);
+            }
+            """
+        )
+
 class plain_button(QPushButton):
     def __init__(self, label: str, parent: QWidget = None):
         super().__init__(label, parent)

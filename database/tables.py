@@ -134,8 +134,7 @@ class stuff(Base):
         self.mail = mail
         self.date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d").date()
         from managers.password_generator import password_generator
-
-        self.password = password_generator.generate_password
+        self.password = password_generator.generate_password()
 
     @property
     def fullname(self):
@@ -147,6 +146,8 @@ class tag(Base):
 
     type = Column(String(100, "utf8mb4_general_ci"), primary_key=True)
     color = Column(CHAR(7, "utf8mb4_general_ci"), nullable=False)
+    
+    
 
 
 class task_stage(Base):
@@ -184,6 +185,25 @@ class task(Base):
     project1 = relationship("project", primaryjoin="task.project_id == project.id")
     task_stage = relationship("task_stage")
     roles_list = relationship("roles_list")
+    
+    def __init__(
+        self,
+        target_role,
+        project_id,
+        deadline,
+        is_done,
+        is_checked,
+        comment,
+        stage
+    ):
+        self.target_role = target_role
+        self.project_id = project_id
+        self.deadline = deadline
+        self.is_done = is_done
+        self.is_checked = is_checked
+        self.comment = comment
+        self.stage = stage
+        
 
 
 class zoom(Base):

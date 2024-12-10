@@ -17,6 +17,17 @@ from managers.DAO_classes import customer_DAO, groups_DAO
 class add_project(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.name_line = parent_line("Назва")
+        self.group = groups_choice(groups_DAO.get_groups())
+        print(groups_DAO.get_groups())
+        self.customer = customer_choice(customer_DAO.get_all_customers())
+        self.cost_line = cost_line("Вартість")
+        self.paid_line = cost_line("Оплачено")
+        self.add_button = button("Додати")
+        self.add_widgets()
+        self.connect_buttons()
+
+    def add_widgets(self):
         self.setWindowTitle("Adding Project")
         self.resize(1000, 600)
         self.setMinimumSize(QSize(600, 400))
@@ -27,24 +38,6 @@ class add_project(QMainWindow):
         self.verticalLayoutWidget = QVBoxLayout(self.centralwidget)
         self.verticalLayoutWidget.setSpacing(20)
         self.verticalLayoutWidget.setContentsMargins(0, 60, 0, 60)
-
-        self.name_line = parent_line("Назва")
-
-        # ComboBox для выбора группы сотрудников
-        self.group = groups_choice(groups_DAO.get_groups())
-        print(groups_DAO.get_groups())
-
-        # ComboBox для выбора клиента
-        self.customer = customer_choice(customer_DAO.get_all_customers())
-
-        self.cost_line = cost_line("Вартість")
-        self.paid_line = cost_line("Оплачено")
-
-        self.add_button = button("Додати")
-        self.add_widgets()
-        self.connect_buttons()
-
-    def add_widgets(self):
         self.verticalLayoutWidget.addWidget(self.name_line, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.group, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.customer, alignment=Qt.AlignCenter)
