@@ -4,9 +4,9 @@ from PySide6.QtWidgets import (
     QLabel,
     QMainWindow,
     QPushButton,
+    QScrollArea,
     QVBoxLayout,
     QWidget,
-    QScrollArea
 )
 
 from database.tables import stuff
@@ -29,6 +29,7 @@ class manager_page(QMainWindow):
         self.add_customer = icon_button("./interface/assets/add_stuff.png")
         self.add_project = icon_button("./interface/assets/add_project.png")
         self.add_group = icon_button("./interface/assets/add_group.png")
+        self.make_report = icon_button("./interface/assets/make_report.png")
 
         self.projects_list = project_DAO.get_all_projects()
         self.button_widgets = []
@@ -68,7 +69,7 @@ class manager_page(QMainWindow):
         self.resize(1000, 600)
         self.setMinimumSize(QSize(600, 400))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
-        
+
         # Додавання привітального повідомлення
         top_layout_label = QHBoxLayout()
         top_layout_label.addWidget(self.label, alignment=Qt.AlignCenter)
@@ -82,6 +83,7 @@ class manager_page(QMainWindow):
         top_layout_buttons.addWidget(self.add_customer)
         top_layout_buttons.addWidget(self.add_project)
         top_layout_buttons.addWidget(self.add_group)
+        top_layout_buttons.addWidget(self.make_report)
         self.main_layout.addLayout(top_layout_buttons)
 
         # Основний шар під верхнім
@@ -113,6 +115,7 @@ class manager_page(QMainWindow):
         from interface.windows.extra_windows.add_group import add_group
         from interface.windows.extra_windows.add_project import add_project
         from interface.windows.extra_windows.add_stuff import add_stuff
+        from managers.report_manager import report_manager
 
         self.add_stuff.clicked.connect(lambda: window_manager.open_page(add_stuff))
         self.add_customer.clicked.connect(
@@ -120,3 +123,4 @@ class manager_page(QMainWindow):
         )
         self.add_project.clicked.connect(lambda: window_manager.open_page(add_project))
         self.add_group.clicked.connect(lambda: window_manager.open_page(add_group))
+        self.make_report.clicked.connect(report_manager.make_report)

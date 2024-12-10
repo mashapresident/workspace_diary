@@ -43,7 +43,7 @@ class customer_DAO:
         except Exception as e:
             print(f"Failed to fetch customer by id: {e}")
             return None
-        
+
     @staticmethod
     def get_all_customers():
         try:
@@ -52,7 +52,6 @@ class customer_DAO:
         except Exception as e:
             print(f"Failed {e}")
             return None
-
 
     @staticmethod
     def get_customer_by_fullname(entered_name: str, entered_surname: str):
@@ -82,8 +81,7 @@ class customer_DAO:
                 return session.query(customer).filter_by(email=entered_email).first()
         except Exception:
             return None
-        
-        
+
     @staticmethod
     def delete_customer(customer_id):
         try:
@@ -127,7 +125,6 @@ class stuff_DAO:
         except Exception as e:
             print(f"Failed to add stuff: {e}")
 
-
     @staticmethod
     def get_stuff_by_phone(entered_phone: str):
         try:
@@ -143,7 +140,6 @@ class stuff_DAO:
                 return session.query(stuff).filter_by(email=entered_email).first()
         except Exception:
             return None
-        
 
     @staticmethod
     def get_password_by_mail(stuff_mail: str):
@@ -153,7 +149,7 @@ class stuff_DAO:
         except Exception as e:
             print("1234")
             return None
-        
+
     @staticmethod
     def get_staff_id_by_fullname(fullname: str):
         list = fullname.split(" ")
@@ -162,12 +158,15 @@ class stuff_DAO:
         """Возвращает идентификатор сотрудника по имени и фамилии."""
         try:
             with session_factory() as session:
-                staff = session.query(stuff).filter_by(name=name, surname=surname).first()
+                staff = (
+                    session.query(stuff).filter_by(name=name, surname=surname).first()
+                )
                 return staff.id if staff else None
         except Exception as e:
             print(f"Failed to fetch staff ID: {e}")
-            
+
             return None
+
     @staticmethod
     def get_stuff_by_id(stuff_id: int):
         try:
@@ -185,12 +184,12 @@ class stuff_DAO:
         except Exception as e:
             print(f"Failed to fetch all stuff: {e}")
             return []
-        
+
     @staticmethod
     def get_all_stuff_without_manager():
         try:
             with session_factory() as session:
-                return session.query(stuff).filter(stuff.role != 'manager').all()
+                return session.query(stuff).filter(stuff.role != "manager").all()
         except:
             return []
 
@@ -244,26 +243,14 @@ class project_DAO:
         except Exception as e:
             print(f"Failed to fetch project by customer id: {e}")
             return None
-        
+
     @staticmethod
     def get_all_projects():
         try:
             with session_factory() as session:
                 return session.query(project).all()
         except Exception as e:
-            print(f"Failed to fetch project by customer id: {e}")
             return None
-
-        
-    @staticmethod
-    def get_all_projects():
-        try:
-            with session_factory() as session:
-                return session.query(project).all()
-        except Exception as e:
-            print(f"Failed to fetch project by customer id: {e}")
-            return None
-
 
     @staticmethod
     def delete_project(project_id):
@@ -279,22 +266,19 @@ class project_DAO:
             print(f"Failed to delete project: {e}")
 
 
-
 class stuff_group_DAO:
     @staticmethod
-    
     @staticmethod
     def add_stuff_to_group(staff_id: int, group_id: int):
         try:
             st_gr = stuff_group(stuff_id=staff_id, group_id=group_id)
             with session_factory() as session:
                 session.add(st_gr)
-                session.commit() 
+                session.commit()
         except Exception as e:
-            session.rollback()  
+            session.rollback()
 
-            
-            
+
 class groups_DAO:
     @staticmethod
     def add_group(group_name: str):
@@ -330,6 +314,7 @@ class groups_DAO:
         except Exception as e:
             print(f"Error fetching groups: {e}")
             return []
+
     @staticmethod
     def get_group_id_by_name(name: str):
         try:
@@ -344,4 +329,19 @@ class groups_DAO:
             print(f"Error fetching group ID by name: {e}")
             return None
 
-            
+
+class tasks_DAO:
+    @staticmethod
+    def get_tasks_by_project_id(project_id):
+        try:
+            with session_factory() as session:
+                tasks = (
+                    session.query(task)
+                    .filter_by(project_id=project_id)
+                    .order_by(task.deadline)
+                    .all()
+                )
+                return tasks
+        except Exception as e:
+            print(f"Failed to fetch tasks for project_id {project_id}: {e}")
+            return None
