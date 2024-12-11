@@ -37,7 +37,7 @@ class list_button(QPushButton):
             """ 
             QPushButton { 
                 background-color: transparent;
-                font: 34pt "Apple Symbols";
+                font: 20pt "Apple Symbols";
                 color: white;
             }
             QPushButton[active="true"] {
