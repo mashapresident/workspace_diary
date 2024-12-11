@@ -56,10 +56,8 @@ class add_customer(QMainWindow):
         self.verticalLayoutWidget.addWidget(self.add_button, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
-        self.add_button.clicked.connect(lambda: self.add_customer())
-        from managers.window_manager import window_manager
-        from interface.windows.manager_page import manager_page
-        self.back_button.clicked.connect(lambda: window_manager.go_to_page(manager_page))
+        self.add_button.clicked.connect(self.add_customer)
+        self.back_button.clicked.connect(self.close)
 
     def add_customer(self):
         # Получение данных из полей

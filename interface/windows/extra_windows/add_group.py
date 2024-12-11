@@ -1,15 +1,17 @@
 from PySide6.QtCore import QSize, Qt
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
+    QListWidget,
+    QListWidgetItem,
     QMainWindow,
     QVBoxLayout,
     QWidget,
-    QListWidget,
-    QListWidgetItem
 )
-from PySide6.QtGui import QFont
-from interface.widgets.qlines import parent_line
+
 from interface.widgets.buttons import button, icon_button
-from managers.DAO_classes import stuff_DAO, stuff_group_DAO, groups_DAO
+from interface.widgets.qlines import parent_line
+from managers.DAO_classes import groups_DAO, stuff_DAO, stuff_group_DAO
+
 
 class add_group(QMainWindow):
     def __init__(self):
@@ -20,7 +22,7 @@ class add_group(QMainWindow):
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
         self.centralwidget = QWidget(self)
         self.setCentralWidget(self.centralwidget)
-        
+
         self.verticalLayoutWidget = QVBoxLayout(self.centralwidget)
         self.verticalLayoutWidget.setSpacing(20)
         self.verticalLayoutWidget.setContentsMargins(20, 60, 20, 60)
@@ -36,14 +38,15 @@ class add_group(QMainWindow):
             "color: black;\n "
             "border-radius: 5px\n"
         )
-        
-        
+
         # Добавление сотрудников в список с чекбоксами
         for staff_member in stuff_DAO.get_all_stuff_without_manager():
-            item = QListWidgetItem(staff_member.fullname)  # Предполагается, что объекты staff имеют атрибут name
+            item = QListWidgetItem(
+                staff_member.fullname
+            )  # Предполагается, что объекты staff имеют атрибут name
             item.setCheckState(Qt.Unchecked)
             self.group_list.addItem(item)
-        
+
         self.add_group = button("Додати")
         self.add_widgets()
         self.connect_buttons()
@@ -52,20 +55,19 @@ class add_group(QMainWindow):
         self.verticalLayoutWidget.addWidget(
             self.back_button, alignment=Qt.AlignTop | Qt.AlignLeft
         )
-        self.verticalLayoutWidget.addWidget(self.name_of_group, alignment=Qt.AlignCenter)
+        self.verticalLayoutWidget.addWidget(
+            self.name_of_group, alignment=Qt.AlignCenter
+        )
         self.verticalLayoutWidget.addWidget(self.group_list, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.add_group, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
-        from managers.window_manager import window_manager
-        from interface.windows.manager_page import manager_page
-        self.back_button.clicked.connect(lambda: window_manager.go_to_page(manager_page))
-
         self.add_group.clicked.connect(self.add_group_to_database)
-        
+        self.back_button.clicked.connect(self.close)
+
     def add_group_to_database(self):
         from interface.widgets.message import message
-        
+
         # Проверяем, что название группы и список сотрудников заполнены
         if not self.name_of_group.text():
             message.show_message("Помилка", "Назва групи не може бути порожньою")
@@ -77,9 +79,9 @@ class add_group(QMainWindow):
         # Добавляем новую группу и получаем её ID
         group_name = self.name_of_group.text()
         groups_DAO.add_group(group_name)
-        
+
         group_id = groups_DAO.get_group_id_by_name(group_name)
-        
+
         # Добавляем сотрудников в группу
         for index in range(self.group_list.count()):
             item = self.group_list.item(index)

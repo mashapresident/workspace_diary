@@ -22,6 +22,11 @@ class mail_manager:
         if employee:
             mail_manager.send_list(mail)
             message.show_message("Лист надіслано", "Перевірте вказану пошту")
+
+            from interface.windows.login_page import login_page
+            from managers.window_manager import window_manager
+
+            window_manager.go_to_page(login_page)
             return
         else:
             message.show_message("Помилка", "Вказану пошту не знайдено")

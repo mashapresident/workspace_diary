@@ -1,19 +1,26 @@
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import (
+    QComboBox,
     QFrame,
     QHBoxLayout,
     QLabel,
     QMainWindow,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
-    QSizePolicy,
-    QComboBox
 )
-from managers.DAO_classes import project_DAO
-from interface.widgets.qlines import parent_line, cost_line, groups_choice, customer_choice
+
 from interface.widgets.buttons import button, icon_button
-from managers.DAO_classes import customer_DAO, groups_DAO
+from interface.widgets.qlines import (
+    cost_line,
+    customer_choice,
+    groups_choice,
+    parent_line,
+)
+from managers.DAO_classes import customer_DAO, groups_DAO, project_DAO
+
+
 class add_project(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -50,16 +57,15 @@ class add_project(QMainWindow):
         self.verticalLayoutWidget.addWidget(self.add_button, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
-        from managers.window_manager import window_manager
-        from interface.windows.manager_page import manager_page
-        self.back_button.clicked.connect(lambda: window_manager.go_to_page(manager_page))
-
-        self.add_button.clicked.connect(lambda: self.add_project_to_database())
+        self.add_button.clicked.connect(self.add_project_to_database)
+        self.back_button.clicked.connect(self.close)
 
     def add_project_to_database(self):
         name = self.name_line.text()
         group_id = self.group.currentIndex() + 1  # или получаем id группы из объекта
-        customer_id = self.customer.selected_items[0] if self.customer.selected_items else None  # Получаем id клиента
+        customer_id = (
+            self.customer.selected_items[0] if self.customer.selected_items else None
+        )  # Получаем id клиента
         cost = self.cost_line.text()
         paid = self.paid_line.text()
 

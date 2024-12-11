@@ -21,7 +21,7 @@ class add_stuff(QMainWindow):
     def __init__(self):
         super().__init__()
         self.back_button = icon_button("./interface/assets/back_button.png")
-        
+
         self.surname_line = parent_line("Прізвище")
 
         self.name_line = parent_line("Імʼя")
@@ -61,11 +61,8 @@ class add_stuff(QMainWindow):
         self.verticalLayoutWidget.addWidget(self.add_button, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
-        self.add_button.clicked.connect(lambda: self.add_stuff())
-        
-        from managers.window_manager import window_manager
-        from interface.windows.manager_page import manager_page
-        self.back_button.clicked.connect(lambda: window_manager.go_to_page(manager_page))
+        self.add_button.clicked.connect(self.add_stuff)
+        self.back_button.clicked.connect(self.close)
 
     def add_stuff(self):
         # Retrieve input data
