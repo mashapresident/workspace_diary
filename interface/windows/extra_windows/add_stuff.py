@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from interface.widgets.buttons import button
+from interface.widgets.buttons import button, icon_button
 from interface.widgets.message import message
 from interface.widgets.qlines import datepicker, email_line, parent_line, phone_line
 from managers.DAO_classes import stuff_DAO
@@ -20,7 +20,8 @@ from managers.DAO_classes import stuff_DAO
 class add_stuff(QMainWindow):
     def __init__(self):
         super().__init__()
-
+        self.back_button = icon_button("./interface/assets/back_button.png")
+        
         self.surname_line = parent_line("Прізвище")
 
         self.name_line = parent_line("Імʼя")
@@ -40,14 +41,17 @@ class add_stuff(QMainWindow):
     def add_widgets(self):
         self.setWindowTitle("Stuff Registration")
         self.resize(1000, 600)
-        self.setMinimumSize(QSize(600, 400))
+        self.setMinimumSize(QSize(1000, 600))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
         self.centralwidget = QWidget(self)
         self.setCentralWidget(self.centralwidget)
 
         self.verticalLayoutWidget = QVBoxLayout(self.centralwidget)
         self.verticalLayoutWidget.setSpacing(20)
-        self.verticalLayoutWidget.setContentsMargins(0, 60, 0, 60)
+        self.verticalLayoutWidget.setContentsMargins(20, 60, 20, 60)
+        self.verticalLayoutWidget.addWidget(
+            self.back_button, alignment=Qt.AlignTop | Qt.AlignLeft
+        )
         self.verticalLayoutWidget.addWidget(self.surname_line, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.name_line, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.phone, alignment=Qt.AlignCenter)
@@ -58,6 +62,10 @@ class add_stuff(QMainWindow):
 
     def connect_buttons(self):
         self.add_button.clicked.connect(lambda: self.add_stuff())
+        
+        from managers.window_manager import window_manager
+        from interface.windows.manager_page import manager_page
+        self.back_button.clicked.connect(lambda: window_manager.go_to_page(manager_page))
 
     def add_stuff(self):
         # Retrieve input data

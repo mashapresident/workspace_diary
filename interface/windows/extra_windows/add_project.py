@@ -12,11 +12,12 @@ from PySide6.QtWidgets import (
 )
 from managers.DAO_classes import project_DAO
 from interface.widgets.qlines import parent_line, cost_line, groups_choice, customer_choice
-from interface.widgets.buttons import button
+from interface.widgets.buttons import button, icon_button
 from managers.DAO_classes import customer_DAO, groups_DAO
 class add_project(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.back_button = icon_button("./interface/assets/back_button.png")
         self.name_line = parent_line("Назва")
         self.group = groups_choice(groups_DAO.get_groups())
         print(groups_DAO.get_groups())
@@ -30,14 +31,17 @@ class add_project(QMainWindow):
     def add_widgets(self):
         self.setWindowTitle("Adding Project")
         self.resize(1000, 600)
-        self.setMinimumSize(QSize(600, 400))
+        self.setMinimumSize(QSize(1000, 600))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
         self.centralwidget = QWidget(self)
         self.setCentralWidget(self.centralwidget)
 
         self.verticalLayoutWidget = QVBoxLayout(self.centralwidget)
         self.verticalLayoutWidget.setSpacing(20)
-        self.verticalLayoutWidget.setContentsMargins(0, 60, 0, 60)
+        self.verticalLayoutWidget.setContentsMargins(20, 60, 20, 60)
+        self.verticalLayoutWidget.addWidget(
+            self.back_button, alignment=Qt.AlignTop | Qt.AlignLeft
+        )
         self.verticalLayoutWidget.addWidget(self.name_line, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.group, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.customer, alignment=Qt.AlignCenter)
@@ -46,6 +50,10 @@ class add_project(QMainWindow):
         self.verticalLayoutWidget.addWidget(self.add_button, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
+        from managers.window_manager import window_manager
+        from interface.windows.manager_page import manager_page
+        self.back_button.clicked.connect(lambda: window_manager.go_to_page(manager_page))
+
         self.add_button.clicked.connect(lambda: self.add_project_to_database())
 
     def add_project_to_database(self):

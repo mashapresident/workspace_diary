@@ -11,19 +11,21 @@ from database.tables import stuff
 from interface.widgets.buttons import icon_button, list_button
 from interface.widgets.task_container import task_container
 from interface.widgets.text import text
+from main import AppState
 from managers.DAO_classes import project_DAO, tasks_DAO
 from managers.window_manager import window_manager
 
 
 class manager_page(QMainWindow):
-    def __init__(self, manager: stuff):
+    def __init__(self, manager: stuff = None):
         super().__init__()
-        self.manager = manager
+        if not AppState.person:
+            AppState.person = manager
         self.opened_project = project_DAO.get_first_project()
         self.centralwidget = QWidget(self)
         self.setCentralWidget(self.centralwidget)
         self.main_layout = QVBoxLayout(self.centralwidget)
-        self.label = text(f"Вітаємо, {self.manager.fullname}", 18, "white")
+        self.label = text(f"Вітаємо, {AppState.person.fullname}", 18, "white")
 
         # Іконки
         self.add_stuff = icon_button("./interface/assets/add_stuff.png")

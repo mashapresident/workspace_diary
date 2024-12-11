@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QFont
 from interface.widgets.qlines import parent_line
-from interface.widgets.buttons import button
+from interface.widgets.buttons import button, icon_button
 from managers.DAO_classes import stuff_DAO, stuff_group_DAO, groups_DAO
 
 class add_group(QMainWindow):
@@ -16,15 +16,16 @@ class add_group(QMainWindow):
         super().__init__()
         self.setWindowTitle("Creating Group")
         self.resize(1000, 600)
-        self.setMinimumSize(QSize(600, 400))
+        self.setMinimumSize(QSize(1000, 600))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
         self.centralwidget = QWidget(self)
         self.setCentralWidget(self.centralwidget)
         
         self.verticalLayoutWidget = QVBoxLayout(self.centralwidget)
         self.verticalLayoutWidget.setSpacing(20)
-        self.verticalLayoutWidget.setContentsMargins(0, 60, 0, 60)
+        self.verticalLayoutWidget.setContentsMargins(20, 60, 20, 60)
 
+        self.back_button = icon_button("./interface/assets/back_button.png")
         self.name_of_group = parent_line("Назва групи")
         self.group_list = QListWidget()
         self.group_list.setFixedWidth(800)
@@ -48,11 +49,18 @@ class add_group(QMainWindow):
         self.connect_buttons()
 
     def add_widgets(self):
+        self.verticalLayoutWidget.addWidget(
+            self.back_button, alignment=Qt.AlignTop | Qt.AlignLeft
+        )
         self.verticalLayoutWidget.addWidget(self.name_of_group, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.group_list, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.add_group, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
+        from managers.window_manager import window_manager
+        from interface.windows.manager_page import manager_page
+        self.back_button.clicked.connect(lambda: window_manager.go_to_page(manager_page))
+
         self.add_group.clicked.connect(self.add_group_to_database)
         
     def add_group_to_database(self):
