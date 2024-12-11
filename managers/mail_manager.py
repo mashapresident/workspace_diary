@@ -8,12 +8,8 @@ from interface.widgets.message import message
 from managers.DAO_classes import stuff_DAO
 from managers.qr_generator import qr_generator
 
-from managers.DAO_classes import stuff_DAO
-from managers.qr_generator import qr_generator
-
 
 class mail_manager:
-
 
     @staticmethod
     def check_and_send(mail: str):
@@ -34,9 +30,7 @@ class mail_manager:
     @staticmethod
     def send_list(mail: str):
         from config import password, smtp_port, smtp_server, username
-        from config import password, smtp_port, smtp_server, username
 
-        employee_password = stuff_DAO.get_password_by_mail(mail)
         employee_password = stuff_DAO.get_password_by_mail(mail)
         # Створення повідомлення
         msg = MIMEMultipart()
@@ -44,7 +38,6 @@ class mail_manager:
         msg["To"] = mail
         msg["Subject"] = "Відновлення паролю"
 
-        body = f"Ваш пароль, що привʼязаний до акаунту на цій пошті {mail} -> {employee_password}"
         body = f"Ваш пароль, що привʼязаний до акаунту на цій пошті {mail} -> {employee_password}"
         msg.attach(MIMEText(body, "plain"))
 
@@ -68,4 +61,3 @@ class mail_manager:
         server.send_message(msg)
         print("Лист з вкладенням успішно надіслано!")
         server.quit()
-        

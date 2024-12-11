@@ -9,11 +9,10 @@ from PySide6.QtWidgets import (
 
 from database.tables import stuff
 from interface.widgets.buttons import icon_button, list_button
-from interface.widgets.text import text
-from managers.DAO_classes import project_DAO
-from managers.window_manager import window_manager
 from interface.widgets.task_container import task_container
-from managers.DAO_classes import tasks_DAO
+from interface.widgets.text import text
+from managers.DAO_classes import project_DAO, tasks_DAO
+from managers.window_manager import window_manager
 
 
 class manager_page(QMainWindow):
@@ -40,8 +39,12 @@ class manager_page(QMainWindow):
         self.left_layout = QVBoxLayout()
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)  # Вертикальний скрол
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # Вимкнено горизонтальний скрол
+        self.scroll_area.setVerticalScrollBarPolicy(
+            Qt.ScrollBarAsNeeded
+        )  # Вертикальний скрол
+        self.scroll_area.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarAlwaysOff
+        )  # Вимкнено горизонтальний скрол
 
         self.scroll_widget = QWidget()
         self.scroll_widget.setLayout(self.left_layout)
@@ -121,30 +124,26 @@ class manager_page(QMainWindow):
 
     def add_task_containers(self):
         assigned = task_container(
-            "to do",
-            tasks_DAO.get_tasks("given", self.opened_project, "manager"),
-            self
+            "to do", tasks_DAO.get_tasks("given", self.opened_project, "manager"), self
         )
         self.right_layout.addWidget(assigned)
-        
+
         process = task_container(
             "in the progress",
             tasks_DAO.get_tasks("in the progress", self.opened_project, "manager"),
-            self
+            self,
         )
         self.right_layout.addWidget(process)
-        
+
         done = task_container(
-            "done",
-            tasks_DAO.get_tasks("done", self.opened_project, "manager"),
-            self
+            "done", tasks_DAO.get_tasks("done", self.opened_project, "manager"), self
         )
         self.right_layout.addWidget(done)
-        
+
         checked = task_container(
             "checked",
             tasks_DAO.get_tasks("checked", self.opened_project, "manager"),
-            self
+            self,
         )
         self.right_layout.addWidget(checked)
 
