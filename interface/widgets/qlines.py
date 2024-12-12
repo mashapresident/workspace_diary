@@ -4,6 +4,8 @@ from PySide6.QtWidgets import QLineEdit, QComboBox,QDialogButtonBox,QVBoxLayout,
 from PySide6.QtWidgets import QDateEdit
 from PySide6.QtCore import QDate
 
+from managers.DAO_classes import role_DAO
+
 class parent_line(QLineEdit):
     def __init__(self,text:str, parent=None):
         super().__init__(parent)
@@ -91,6 +93,31 @@ class customer_choice(check_box):
         self.dialog = QDialog(self)
         layout = QVBoxLayout()
         self.checkboxes = []
+        
+        for item in list:
+            checkbox = QCheckBox(item.fullname)
+            checkbox.stateChanged.connect(self.update_selected_items)
+            layout.addWidget(checkbox)
+            self.checkboxes.append(checkbox)
+
+        self.dialog.setLayout(layout)
+        self.selected_items = []
+
+    def update_selected_items(self):
+        for cb in self.checkboxes:
+            if cb.isChecked():
+                self.selected_items = [cb.text()]
+                break
+            self.selected_items = []
+
+class role_choice(check_box):
+    from managers.DAO_classes import role_DAO
+    from database.tables import roles_list
+    def __init__(self, list:List[roles_list]):
+        super().__init__("Оберіть замовника")
+        self.dialog = QDialog(self)
+        layout = QVBoxLayout()
+        self.checkboxes = role_DAO.get_roles()
         
         for item in list:
             checkbox = QCheckBox(item.fullname)

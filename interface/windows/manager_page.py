@@ -20,6 +20,7 @@ class PageNames:
     CUSTOMER = "Customer"
     PROJECT = "Project"
     GROUP = "Group"
+    TASK = "Task"
 
 
 class manager_page(QMainWindow):
@@ -38,11 +39,11 @@ class manager_page(QMainWindow):
         self.add_project = icon_button("./interface/assets/add_project.png")
         self.add_group = icon_button("./interface/assets/add_group.png")
         self.make_report = icon_button("./interface/assets/make_report.png")
+        self.add_task = icon_button("./interface/assets/add_task.png")
 
         self.projects_list = project_DAO.get_all_projects()
         self.button_widgets = []
 
-        # Лівий блок зі скролом
         self.left_layout = QVBoxLayout()
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
@@ -159,6 +160,7 @@ class manager_page(QMainWindow):
         from interface.windows.extra_windows.add_group import add_group
         from interface.windows.extra_windows.add_project import add_project
         from interface.windows.extra_windows.add_stuff import add_stuff
+        from interface.windows.extra_windows.add_task import add_task
         from managers.report_manager import report_manager
 
         self.add_stuff.clicked.connect(
@@ -172,6 +174,9 @@ class manager_page(QMainWindow):
         )
         self.add_group.clicked.connect(
             lambda: window_manager.open_page(add_group, PageNames.GROUP)
+        )
+        self.add_group.clicked.connect(
+            lambda: window_manager.open_page(add_task, PageNames.TASK)
         )
         self.make_report.clicked.connect(report_manager.make_report)
 

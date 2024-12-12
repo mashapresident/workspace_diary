@@ -80,6 +80,9 @@ class roles_list(Base):
 
     role = Column(String(100, "utf8mb4_general_ci"), primary_key=True)
 
+    def __init__(self, role_name: str):
+        self.role_name = role_name
+
 
 class stuff_group(Base):
     __tablename__ = "stuff_group"
@@ -191,18 +194,17 @@ class task(Base):
         target_role,
         project_id,
         deadline,
-        is_done,
-        is_checked,
         comment,
-        stage
+        stage="to do",  # Значення за замовчуванням
     ):
         self.target_role = target_role
         self.project_id = project_id
         self.deadline = deadline
-        self.is_done = is_done
-        self.is_checked = is_checked
+        self.is_done = None  # None замість null
+        self.is_checked = None  # None замість null
         self.comment = comment
-        self.stage = stage
+        self.stage = stage  # Використання параметра
+
         
 
 
