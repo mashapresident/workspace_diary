@@ -73,15 +73,15 @@ class project(Base):
 
     customer = relationship("customer")
     group = relationship("groups_list")
-    
 
-    def __init__(self, name: str, group_id: int, customer_id:int, cost:int, paid:int):
+    def __init__(
+        self, name: str, group_id: int, customer_id: int, cost: int, paid: int
+    ):
         self.name = name
         self.group_id = group_id
         self.customer_id = customer_id
         self.cost = cost
         self.paid = paid
-
 
 
 class roles_list(Base):
@@ -146,6 +146,7 @@ class stuff(Base):
         self.mail = mail
         self.date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d").date()
         from managers.password_generator import password_generator
+
         self.password = password_generator.generate_password()
 
     @property
@@ -158,8 +159,6 @@ class tag(Base):
 
     type = Column(String(100, "utf8mb4_general_ci"), primary_key=True)
     color = Column(CHAR(7, "utf8mb4_general_ci"), nullable=False)
-    
-    
 
 
 class task_stage(Base):
@@ -197,14 +196,14 @@ class task(Base):
     project1 = relationship("project", primaryjoin="task.project_id == project.id")
     task_stage = relationship("task_stage")
     roles_list = relationship("roles_list")
-    
+
     def __init__(
         self,
         target_role,
         project_id,
         deadline,
         comment,
-        stage="to do",  # Значення за замовчуванням
+        stage="given",  # Значення за замовчуванням
     ):
         self.target_role = target_role
         self.project_id = project_id
@@ -213,8 +212,6 @@ class task(Base):
         self.is_checked = None  # None замість null
         self.comment = comment
         self.stage = stage  # Використання параметра
-
-        
 
 
 class zoom(Base):
