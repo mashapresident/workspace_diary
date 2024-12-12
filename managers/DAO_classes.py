@@ -108,6 +108,7 @@ class stuff_DAO:
         date_of_birth: str,
     ):
         try:
+            print(type(date_of_birth))
             new_stuff = stuff(
                 name=name,
                 surname=surname,
@@ -115,7 +116,7 @@ class stuff_DAO:
                 phone=phone,
                 address=address,
                 mail=mail,
-                date_of_birth=datetime.strptime(date_of_birth, "%d-%m-%Y").date(),
+                date_of_birth=date_of_birth,
             )
             with session_factory() as session:
                 session.add(new_stuff)
@@ -377,4 +378,19 @@ class tasks_DAO:
             print(
                 f"Failed to fetch tasks for project {proj.id} with role {target_role}: {e}"
             )
+            return None
+
+
+class roles_DAO:
+    @staticmethod
+    def get_all_roles():
+        """
+        Повертає всі ролі з таблиці roles_list.
+        """
+        try:
+            with session_factory() as session:
+                roles = session.query(roles_list).all()
+                return roles
+        except Exception as e:
+            print(f"Failed to fetch roles: {e}")
             return None

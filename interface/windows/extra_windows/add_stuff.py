@@ -13,8 +13,14 @@ from PySide6.QtWidgets import (
 
 from interface.widgets.buttons import button, icon_button
 from interface.widgets.message import message
-from interface.widgets.qlines import datepicker, email_line, parent_line, phone_line
-from managers.DAO_classes import stuff_DAO
+from interface.widgets.qlines import (
+    datepicker,
+    email_line,
+    parent_line,
+    phone_line,
+    role_choice,
+)
+from managers.DAO_classes import roles_DAO, stuff_DAO
 
 
 class add_stuff(QMainWindow):
@@ -25,6 +31,8 @@ class add_stuff(QMainWindow):
         self.surname_line = parent_line("Прізвище")
 
         self.name_line = parent_line("Імʼя")
+        print(roles_DAO.get_all_roles())
+        self.role_choice = role_choice(roles_DAO.get_all_roles())
 
         self.phone = phone_line()
 
@@ -53,6 +61,7 @@ class add_stuff(QMainWindow):
         )
         self.verticalLayoutWidget.addWidget(self.surname_line, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.name_line, alignment=Qt.AlignCenter)
+        self.verticalLayoutWidget.addWidget(self.role_choice, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.phone, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.adress, alignment=Qt.AlignCenter)
         self.verticalLayoutWidget.addWidget(self.mail, alignment=Qt.AlignCenter)
@@ -70,10 +79,7 @@ class add_stuff(QMainWindow):
         phone = self.phone.text().strip()
         address = self.adress.text().strip()
         email = self.mail.text().strip()
-        birth_date = self.date.date().toString(
-            "yyyy-MM-dd"
-        )  # Use standard format for birth date
-        print(birth_date)
+        birth_date = self.date.date().toString("yyyy-MM-dd")
         # Check if all required fields are filled
         if not name or not surname or not phone:
             message.show_message("Помилка", "Не всі обовʼязкові поля заповнені")
@@ -106,7 +112,6 @@ class add_stuff(QMainWindow):
         if age < 18:
             message.show_message("Помилка", "Вік має бути 18 років або більше")
             return
-
         stuff_DAO.add_stuff(
             name,
             surname,
