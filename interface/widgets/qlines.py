@@ -136,6 +136,14 @@ class role_choice(check_box):
 
         for role in roles_list:
             self.addItem(role.role)
+            
+class project_choice(check_box):
+    def __init__(self, projects):
+        super().__init__("Оберіть роль")
+        self.dialog = QDialog(self)
+
+        for project in projects:
+            self.addItem(project.name)
 
 
 class datepicker(QDateEdit):

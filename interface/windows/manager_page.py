@@ -68,12 +68,25 @@ class manager_page(QMainWindow):
             self.button_widgets.append(button)
             self.left_layout.addWidget(button)
 
+        self.assigned = task_container(
+            "to do", tasks_DAO.get_tasks("given", self.opened_project, "manager"), self
+        )
+        self.process = task_container(
+            "in the progress",
+            tasks_DAO.get_tasks("in the progress", self.opened_project, "manager"),
+            self,
+        )
+        self.done = task_container(
+            "done", tasks_DAO.get_tasks("done", self.opened_project, "manager"), self
+        )
+        self.checked = task_container(
+            "checked",
+            tasks_DAO.get_tasks("checked", self.opened_project, "manager"),
+            self,
+        )
         self.add_widgets()
         self.connect_buttons()
-
-        # Додавання task_container у правий блок
-        self.add_task_containers()
-
+        
     def add_widgets(self):
         self.resize(1000, 600)
         self.setMinimumSize(QSize(600, 400))
@@ -93,6 +106,7 @@ class manager_page(QMainWindow):
         top_layout_buttons.addWidget(self.add_project)
         top_layout_buttons.addWidget(self.add_group)
         top_layout_buttons.addWidget(self.make_report)
+        top_layout_buttons.addWidget(self.add_task)
         self.main_layout.addLayout(top_layout_buttons)
 
         # Основний вміст
@@ -106,54 +120,24 @@ class manager_page(QMainWindow):
         self.content_layout.addLayout(self.right_layout, 4)  # Правий блок
         self.main_layout.addLayout(self.content_layout)
 
+
+        self.right_layout.addWidget(self.assigned)
+        self.right_layout.addWidget(self.process)
+        self.right_layout.addWidget(self.done)
+        self.right_layout.addWidget(self.checked)
     @Slot()
     def handle_button_click(self):
-        # Отримуємо кнопку, яка викликала сигнал
         clicked_button = self.sender()
-
-        # Скидаємо стан "active" для всіх кнопок
         for button in self.button_widgets:
             button.setProperty("active", False)
-
-        # Встановлюємо "active" для натиснутої кнопки
         clicked_button.setProperty("active", True)
-
-        # Оновлюємо стиль
+        
         for button in self.button_widgets:
             button.style().unpolish(button)
             button.style().polish(button)
-
-        # Отримуємо індекс або проєкт, пов'язаний із натиснутою кнопкою
         button_index = self.button_widgets.index(clicked_button)
         selected_project = self.projects_list[button_index]
-
-        # Зберігаємо вибраний проєкт
         self.opened_project = selected_project
-
-    def add_task_containers(self):
-        assigned = task_container(
-            "to do", tasks_DAO.get_tasks("given", self.opened_project, "manager"), self
-        )
-        self.right_layout.addWidget(assigned)
-
-        process = task_container(
-            "in the progress",
-            tasks_DAO.get_tasks("in the progress", self.opened_project, "manager"),
-            self,
-        )
-        self.right_layout.addWidget(process)
-
-        done = task_container(
-            "done", tasks_DAO.get_tasks("done", self.opened_project, "manager"), self
-        )
-        self.right_layout.addWidget(done)
-
-        checked = task_container(
-            "checked",
-            tasks_DAO.get_tasks("checked", self.opened_project, "manager"),
-            self,
-        )
-        self.right_layout.addWidget(checked)
 
     def connect_buttons(self):
         from interface.windows.extra_windows.add_customer import add_customer

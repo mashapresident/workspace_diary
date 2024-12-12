@@ -219,6 +219,14 @@ class stuff_DAO:
 
 class project_DAO:
     @staticmethod
+    def get_id_by_name(name:str):
+        try:
+            with session_factory() as session:
+                return session.query(project).filter_by(name = name).first().id
+        except Exception as e:
+            print(f"Failed to fetch project by customer id: {e}")
+            return None
+    @staticmethod
     def add_project(name: str, group_id: int, customer_id: int, cost: int, paid: int):
         try:
             new_project = project(
