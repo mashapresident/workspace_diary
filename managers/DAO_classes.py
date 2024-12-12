@@ -108,6 +108,7 @@ class stuff_DAO:
         date_of_birth: str,
     ):
         try:
+            print(type(date_of_birth))
             new_stuff = stuff(
                 name=name,
                 surname=surname,
@@ -115,7 +116,7 @@ class stuff_DAO:
                 phone=phone,
                 address=address,
                 mail=mail,
-                date_of_birth=datetime.strptime(date_of_birth, "%d-%m-%Y").date(),
+                date_of_birth=date_of_birth,
             )
             with session_factory() as session:
                 session.add(new_stuff)
@@ -346,7 +347,7 @@ class tasks_DAO:
                     target_role=target_role,
                     project_id=project_id,
                     deadline=deadline,
-                    comment=comment
+                    comment=comment,
                 )
                 session.add(new_task)
                 session.commit()
@@ -355,13 +356,13 @@ class tasks_DAO:
 
     @staticmethod
     def get_all_tasks():
-            """Повертає всі завдання з бази даних."""
-            try:
-                with session_factory() as session:
-                    return session.query(task).all()
-            except Exception as e:
-                raise Exception(f"Database error: {e}")
-            
+        """Повертає всі завдання з бази даних."""
+        try:
+            with session_factory() as session:
+                return session.query(task).all()
+        except Exception as e:
+            raise Exception(f"Database error: {e}")
+
     @staticmethod
     def get_tasks(stage: str, proj: project, target_role: str):
         """
@@ -388,24 +389,31 @@ class tasks_DAO:
                 f"Failed to fetch tasks for project {proj.id} with role {target_role}: {e}"
             )
             return None
+
     @staticmethod
     def get_all_tasks():
-            """Повертає всі завдання з бази даних."""
-            try:
-                with session_factory() as session:
-                    return session.query(task).all()
-            except Exception as e:
-                raise Exception(f"Database error: {e}")
-        
-class role_DAO:
-    @staticmethod
-    def get_roles():
-        """Повертає всі доступні ролі."""
+        """Повертає всі завдання з бази даних."""
         try:
             with session_factory() as session:
-                return session.query(roles_list).all()
+                return session.query(task).all()
         except Exception as e:
             raise Exception(f"Database error: {e}")
+
+
+class roles_DAO:
+    @staticmethod
+    def get_all_roles():
+        """
+        Повертає всі ролі з таблиці roles_list.
+        """
+        try:
+            with session_factory() as session:
+                roles = session.query(roles_list).all()
+                return roles
+        except Exception as e:
+            print(f"Failed to fetch roles: {e}")
+            return None
+
 
 class task_stage_DAO:
     @staticmethod

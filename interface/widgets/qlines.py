@@ -1,13 +1,21 @@
 from typing import List
-from PySide6.QtGui import QRegularExpressionValidator
-from PySide6.QtWidgets import QLineEdit, QComboBox,QDialogButtonBox,QVBoxLayout,QCheckBox, QDialog, QPushButton
-from PySide6.QtWidgets import QDateEdit
-from PySide6.QtCore import QDate
 
-from managers.DAO_classes import role_DAO
+from PySide6.QtCore import QDate
+from PySide6.QtGui import QRegularExpressionValidator
+from PySide6.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QDateEdit,
+    QDialog,
+    QDialogButtonBox,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+)
+
 
 class parent_line(QLineEdit):
-    def __init__(self,text:str, parent=None):
+    def __init__(self, text: str, parent=None):
         super().__init__(parent)
         self.setFixedSize(800, 40)
         self.setPlaceholderText(text)
@@ -24,9 +32,10 @@ class phone_line(parent_line):
         super().__init__("+1234567890", parent)
         phone_validator = QRegularExpressionValidator(r"^\+\d*$")
         self.setValidator(phone_validator)
-        
+
+
 class cost_line(parent_line):
-    def __init__(self,text: str, parent=None):
+    def __init__(self, text: str, parent=None):
         super().__init__(text, parent)
         cost_validator = QRegularExpressionValidator(r"\d*$")
         self.setValidator(cost_validator)
@@ -39,11 +48,13 @@ class email_line(parent_line):
             r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
         )
         self.setValidator(email_validator)
-        
+
+
 class password_line(parent_line):
     def __init__(self, parent=None):
         super().__init__("password", parent)
         self.setEchoMode(QLineEdit.EchoMode.Password)
+
 
 class check_box(QComboBox):
     def __init__(self, text: str, parent=None):
@@ -62,38 +73,45 @@ class check_box(QComboBox):
         self.show_dialog_button.clicked.connect(self.show_dialog)
 
     def show_dialog(self):
-        if self.dialog:
-            self.dialog.exec()
+        if not self.dialog:
+            self.dialog = QDialog()
+            self.dialog.setWindowTitle("Dialog Example")
+            self.dialog.setFixedSize(300, 150)
+        self.dialog.exec()
+
 
 class groups_choice(check_box):
     from database.tables import groups_list
+
     def __init__(self, list: List[groups_list]):
         super().__init__("Оберіть групу")
         self.dialog = QDialog(self)
         layout = QVBoxLayout()
         self.checkboxes = []
-        
+
         # Добавляем чекбоксы
         for item in list:
             checkbox = QCheckBox(item.name)
             checkbox.stateChanged.connect(self.update_selected_items)
             layout.addWidget(checkbox)
             self.checkboxes.append(checkbox)
-        
+
         self.dialog.setLayout(layout)
         self.selected_items = []
 
     def update_selected_items(self):
         self.selected_items = [cb.text() for cb in self.checkboxes if cb.isChecked()]
 
+
 class customer_choice(check_box):
     from database.tables import customer
-    def __init__(self, list:List[customer]):
+
+    def __init__(self, list: List[customer]):
         super().__init__("Оберіть замовника")
         self.dialog = QDialog(self)
         layout = QVBoxLayout()
         self.checkboxes = []
-        
+
         for item in list:
             checkbox = QCheckBox(item.fullname)
             checkbox.stateChanged.connect(self.update_selected_items)
@@ -109,31 +127,16 @@ class customer_choice(check_box):
                 self.selected_items = [cb.text()]
                 break
             self.selected_items = []
+
 
 class role_choice(check_box):
-    from managers.DAO_classes import role_DAO
-    from database.tables import roles_list
-    def __init__(self, list:List[roles_list]):
-        super().__init__("Оберіть замовника")
+    def __init__(self, roles_list):
+        super().__init__("Оберіть роль")
         self.dialog = QDialog(self)
-        layout = QVBoxLayout()
-        self.checkboxes = role_DAO.get_roles()
-        
-        for item in list:
-            checkbox = QCheckBox(item.fullname)
-            checkbox.stateChanged.connect(self.update_selected_items)
-            layout.addWidget(checkbox)
-            self.checkboxes.append(checkbox)
 
-        self.dialog.setLayout(layout)
-        self.selected_items = []
+        for role in roles_list:
+            self.addItem(role.role)
 
-    def update_selected_items(self):
-        for cb in self.checkboxes:
-            if cb.isChecked():
-                self.selected_items = [cb.text()]
-                break
-            self.selected_items = []
 
 class datepicker(QDateEdit):
     def __init__(self, parent=None):
@@ -141,7 +144,8 @@ class datepicker(QDateEdit):
         self.setCalendarPopup(True)
         date = QDate.fromString("01.01.2006", "dd.MM.yyyy")
         self.setDate(date)
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
             QDateEdit {
                 background-color: rgb(161, 149, 189);
                 border: 2px solid rgb(98, 90, 143);
@@ -153,5 +157,6 @@ class datepicker(QDateEdit):
             QDateEdit::drop-down {
                 border: none;
             }
-        """)
+        """
+        )
         self.setDisplayFormat("dd.MM.yyyy")
