@@ -58,6 +58,7 @@ class add_customer(QMainWindow):
         self.add_button.clicked.connect(self.add_customer)
         self.back_button.clicked.connect(self.close)
 
+    
     def add_customer(self):
         # Получение данных из полей
         name = self.name_line.text().strip()
@@ -65,7 +66,7 @@ class add_customer(QMainWindow):
         phone = self.phone.text().strip()
         address = self.adress.text().strip()
         email = self.mail.text().strip()
-        birth_date = self.date.date()  # Получаем объект datetime.date
+        birth_date = self.date.date().toPython()  # Convert QDate to datetime.date
 
         from interface.widgets.message import message
 
@@ -88,16 +89,24 @@ class add_customer(QMainWindow):
 
         # Проверка возраста клиента
         today = datetime.today().date()
-        age = (today - birth_date).days // 365
+
+        # Перетворення birth_date у строку у форматі 'YYYY-MM-DD'
+        birth_date_str = birth_date.strftime('%Y-%m-%d')
+
+        # Обчислення віку
+        birth_date_obj = datetime.strptime(birth_date_str, '%Y-%m-%d').date()
+        age = (today - birth_date_obj).days // 365
         if age < 18:
             message.show_message("Помилка", "Клієнт повинен бути старше 18 років")
             return
 
+        # Виклик add_customer з рядковим форматом дати
         customer_DAO.add_customer(
             name,
             surname,
             phone,
             address,
             email,
-            birth_date,
+            birth_date_str,  # Передаємо дату як строку у форматі 'YYYY-MM-DD'
         )
+        message.show_message("Успішно", "Клієнта зареєстровано")

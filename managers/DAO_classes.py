@@ -27,7 +27,7 @@ class customer_DAO:
                 phone,
                 address,
                 mail,
-                datetime.strptime(date_of_birth, "%d-%m-%Y").date(),
+                datetime.strptime(date_of_birth, "%Y-%m-%d").date(),
             )
             with session_factory() as session:
                 session.add(new_customer)
