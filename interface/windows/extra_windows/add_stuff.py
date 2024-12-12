@@ -39,7 +39,6 @@ class add_stuff(QMainWindow):
         self.connect_buttons()
 
     def add_widgets(self):
-        self.setWindowTitle("Stuff Registration")
         self.resize(1000, 600)
         self.setMinimumSize(QSize(1000, 600))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
@@ -74,7 +73,7 @@ class add_stuff(QMainWindow):
         birth_date = self.date.date().toString(
             "yyyy-MM-dd"
         )  # Use standard format for birth date
-
+        print(birth_date)
         # Check if all required fields are filled
         if not name or not surname or not phone:
             message.show_message("Помилка", "Не всі обовʼязкові поля заповнені")
@@ -111,6 +110,7 @@ class add_stuff(QMainWindow):
         stuff_DAO.add_stuff(
             name,
             surname,
+            "manager",
             phone,
             address,
             email,

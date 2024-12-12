@@ -106,7 +106,6 @@ class stuff_DAO:
         address: str,
         mail: str,
         date_of_birth: str,
-        password: str,
     ):
         try:
             new_stuff = stuff(
@@ -117,7 +116,6 @@ class stuff_DAO:
                 address=address,
                 mail=mail,
                 date_of_birth=datetime.strptime(date_of_birth, "%d-%m-%Y").date(),
-                password=password,
             )
             with session_factory() as session:
                 session.add(new_stuff)
@@ -251,7 +249,7 @@ class project_DAO:
                 return session.query(project).all()
         except Exception as e:
             return None
-        
+
     @staticmethod
     def get_first_project():
         try:
@@ -376,5 +374,7 @@ class tasks_DAO:
                 tasks = query.order_by(task.deadline).all()
                 return tasks
         except Exception as e:
-            print(f"Failed to fetch tasks for project {proj.id} with role {target_role}: {e}")
+            print(
+                f"Failed to fetch tasks for project {proj.id} with role {target_role}: {e}"
+            )
             return None

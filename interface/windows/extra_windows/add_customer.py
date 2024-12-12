@@ -34,7 +34,6 @@ class add_customer(QMainWindow):
         self.connect_buttons()
 
     def add_widgets(self):
-        self.setWindowTitle("Customer Registration")
         self.resize(1000, 600)
         self.setMinimumSize(QSize(1000, 600))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
