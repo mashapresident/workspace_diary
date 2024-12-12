@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QDialog,
     QLineEdit,
     QPushButton,
-    QVBoxLayout,
+    QTextEdit
 )
 
 
@@ -24,7 +24,17 @@ class parent_line(QLineEdit):
             "color: rgb(146, 108, 230);\n "
             "border-radius: 3px"
         )
-
+class comment_line(QTextEdit):
+    def __init__(self, text: str, parent=None):
+        super().__init__(parent)
+        self.setFixedSize(800, 100)
+        self.setPlaceholderText(text)
+        self.setStyleSheet(
+            "background-color: rgb(188, 191, 191);\n"
+            'font: 20pt "Apple Symbols";\n'
+            "color: rgb(146, 108, 230);\n "
+            "border-radius: 3px"
+        )
 
 class phone_line(parent_line):
     def __init__(self, parent=None):

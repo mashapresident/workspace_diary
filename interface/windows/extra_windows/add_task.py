@@ -1,11 +1,10 @@
 from datetime import datetime
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import (
-    QVBoxLayout, QHBoxLayout, QMainWindow, QWidget
+    QVBoxLayout, QHBoxLayout, QMainWindow, QWidget, QTextEdit
 )
 from interface.widgets.buttons import icon_button, button
-from interface.widgets.qlines import datepicker, role_choice, parent_line, project_choice
-from interface.widgets.text import text
+from interface.widgets.qlines import datepicker, role_choice, project_choice, comment_line
 from managers.DAO_classes import tasks_DAO, project_DAO, roles_DAO
 
 class add_task(QMainWindow):
@@ -15,8 +14,7 @@ class add_task(QMainWindow):
         self.project_picker = project_choice(project_DAO.get_all_projects())
         self.role_dropdown = role_choice(roles_DAO.get_all_roles())
         self.deadline_picker = datepicker()
-        self.comment_input = parent_line("Коментар")
-
+        self.comment_input = comment_line("Залиште коментар")
         # Кнопки
         self.add_button = button("Додати завдання")
         self.back_button = icon_button("./interface/assets/back_button.png")
@@ -43,20 +41,16 @@ class add_task(QMainWindow):
         top_layout = QHBoxLayout()
         top_layout.addWidget(self.back_button, alignment=Qt.AlignLeft)
         self.layout.addLayout(top_layout)
-        
         self.layout.addWidget(self.project_picker, alignment=Qt.AlignCenter)
-     
         self.layout.addWidget(self.role_dropdown, alignment=Qt.AlignCenter)
-
         self.layout.addWidget(self.deadline_picker, alignment=Qt.AlignCenter)
-
         self.layout.addWidget(self.comment_input, alignment=Qt.AlignCenter)
-
         self.layout.addWidget(self.add_button, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
         """Підключення кнопок до відповідних методів."""
         self.add_button.clicked.connect(self.add_task)
+        self.back_button.clicked.connect(self.close)
 
     def add_task(self):
         """Додавання нового завдання."""
@@ -64,7 +58,6 @@ class add_task(QMainWindow):
 
         # Отримання даних із полів
         target_role = self.role_dropdown.currentText()
-        project_id = self.project_id_input.text().strip()
         deadline = self.deadline_picker.date().toString("yyyy-MM-dd")
         comment = self.comment_input.toPlainText().strip()
         project_id = project_DAO.get_id_by_name(self.project_picker.currentText())

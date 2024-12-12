@@ -121,3 +121,4 @@ class add_stuff(QMainWindow):
             email,
             birth_date,
         )
+        message.show_message("Успішно", "Працівника зареєстровано")
