@@ -7,7 +7,6 @@ from PySide6.QtWidgets import (
     QComboBox,
     QDateEdit,
     QDialog,
-    QDialogButtonBox,
     QLineEdit,
     QPushButton,
     QVBoxLayout,
@@ -82,51 +81,21 @@ class check_box(QComboBox):
 
 class groups_choice(check_box):
     from database.tables import groups_list
+    def __init__(self, groups: list[groups_list]):
+                super().__init__("Група")
+                self.dialog = QDialog(self)
+                for group in groups:
+                    self.addItem(group.name)
 
-    def __init__(self, list: List[groups_list]):
-        super().__init__("Оберіть групу")
-        self.dialog = QDialog(self)
-        layout = QVBoxLayout()
-        self.checkboxes = []
-
-        # Добавляем чекбоксы
-        for item in list:
-            checkbox = QCheckBox(item.name)
-            checkbox.stateChanged.connect(self.update_selected_items)
-            layout.addWidget(checkbox)
-            self.checkboxes.append(checkbox)
-
-        self.dialog.setLayout(layout)
-        self.selected_items = []
-
-    def update_selected_items(self):
-        self.selected_items = [cb.text() for cb in self.checkboxes if cb.isChecked()]
 
 
 class customer_choice(check_box):
     from database.tables import customer
-
-    def __init__(self, list: List[customer]):
-        super().__init__("Оберіть замовника")
-        self.dialog = QDialog(self)
-        layout = QVBoxLayout()
-        self.checkboxes = []
-
-        for item in list:
-            checkbox = QCheckBox(item.fullname)
-            checkbox.stateChanged.connect(self.update_selected_items)
-            layout.addWidget(checkbox)
-            self.checkboxes.append(checkbox)
-
-        self.dialog.setLayout(layout)
-        self.selected_items = []
-
-    def update_selected_items(self):
-        for cb in self.checkboxes:
-            if cb.isChecked():
-                self.selected_items = [cb.text()]
-                break
-            self.selected_items = []
+    def __init__(self, customers: list[customer]):
+            super().__init__("Замовник")
+            self.dialog = QDialog(self)
+            for customer in customers:
+                self.addItem(customer.fullname)
 
 
 class role_choice(check_box):

@@ -54,13 +54,16 @@ class customer_DAO:
             return None
 
     @staticmethod
-    def get_customer_by_fullname(entered_name: str, entered_surname: str):
+    def get_customer_id_by_fullname(fulname: str):
+        ns = fulname.split(" ")
+        name = ns[0]
+        surname = ns[1]
         try:
             with session_factory() as session:
                 return (
                     session.query(customer)
-                    .filter_by(name=entered_name, surname=entered_surname)
-                    .all()
+                    .filter_by(name = name, surname=surname)
+                    .first().id
                 )
         except Exception as e:
             print(f"Failed to fetch customer by id: {e}")

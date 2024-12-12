@@ -1,22 +1,21 @@
 from datetime import datetime
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import (
-    QVBoxLayout, QHBoxLayout, QMainWindow, QWidget,
-    QComboBox, QLabel, QPushButton, QLineEdit, QTextEdit
+    QVBoxLayout, QHBoxLayout, QMainWindow, QWidget
 )
 from interface.widgets.buttons import icon_button, button
 from interface.widgets.qlines import datepicker, role_choice, parent_line, project_choice
 from interface.widgets.text import text
-from managers.DAO_classes import tasks_DAO, project_DAO
+from managers.DAO_classes import tasks_DAO, project_DAO, roles_DAO
 
 class add_task(QMainWindow):
     def __init__(self):
         super().__init__()
         self.back_button = icon_button("./interface/assets/back_button.png")
-        self.project_picker = project_choice()
-        self.role_dropdown = role_choice()
+        self.project_picker = project_choice(project_DAO.get_all_projects())
+        self.role_dropdown = role_choice(roles_DAO.get_all_roles())
         self.deadline_picker = datepicker()
-        self.comment_input = parent_line()
+        self.comment_input = parent_line("Коментар")
 
         # Кнопки
         self.add_button = button("Додати завдання")
@@ -45,16 +44,12 @@ class add_task(QMainWindow):
         top_layout.addWidget(self.back_button, alignment=Qt.AlignLeft)
         self.layout.addLayout(top_layout)
         
-        self.layout.addWidget(text("Оберіть проєкт",14,"white"), alignment=Qt.AlignLeft)
         self.layout.addWidget(self.project_picker, alignment=Qt.AlignCenter)
      
-        self.layout.addWidget(text("Оберіть роль",14,"white"), alignment=Qt.AlignLeft)
         self.layout.addWidget(self.role_dropdown, alignment=Qt.AlignCenter)
 
-        self.layout.addWidget(text("Дедлайн",14,"white"), alignment=Qt.AlignLeft)
         self.layout.addWidget(self.deadline_picker, alignment=Qt.AlignCenter)
 
-        self.layout.addWidget(text("Коментар",14,"white"), alignment=Qt.AlignLeft)
         self.layout.addWidget(self.comment_input, alignment=Qt.AlignCenter)
 
         self.layout.addWidget(self.add_button, alignment=Qt.AlignCenter)

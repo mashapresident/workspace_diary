@@ -159,7 +159,7 @@ class manager_page(QMainWindow):
         self.add_group.clicked.connect(
             lambda: window_manager.open_page(add_group, PageNames.GROUP)
         )
-        self.add_group.clicked.connect(
+        self.add_task.clicked.connect(
             lambda: window_manager.open_page(add_task, PageNames.TASK)
         )
         self.make_report.clicked.connect(report_manager.make_report)

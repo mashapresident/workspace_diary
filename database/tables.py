@@ -73,6 +73,15 @@ class project(Base):
 
     customer = relationship("customer")
     group = relationship("groups_list")
+    
+
+    def __init__(self, name: str, group_id: int, customer_id:int, cost:int, paid:int):
+        self.name = name
+        self.group_id = group_id
+        self.customer_id = customer_id
+        self.cost = cost
+        self.paid = paid
+
 
 
 class roles_list(Base):

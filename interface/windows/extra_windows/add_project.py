@@ -1,17 +1,12 @@
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import (
-    QComboBox,
-    QFrame,
-    QHBoxLayout,
-    QLabel,
     QMainWindow,
-    QPushButton,
-    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
 from interface.widgets.buttons import button, icon_button
+from interface.widgets.message import message
 from interface.widgets.qlines import (
     cost_line,
     customer_choice,
@@ -60,16 +55,17 @@ class add_project(QMainWindow):
         self.back_button.clicked.connect(self.close)
 
     def add_project_to_database(self):
+        if not( self.name_line.text() or self.name_line.text() or self.paid_line.text()):
+            message.show_message("Помилка", "Не всі поня заповнені")
+            return
+        
         name = self.name_line.text()
-        group_id = self.group.currentIndex() + 1  # или получаем id группы из объекта
-        customer_id = (
-            self.customer.selected_items[0] if self.customer.selected_items else None
-        )  # Получаем id клиента
-        cost = self.cost_line.text()
+        group_id = groups_DAO.get_group_id_by_name(self.group.currentText()) 
+        customer_id = customer_DAO.get_customer_id_by_fullname(self.customer.currentText())
+        cost =  self.name_line.text()
         paid = self.paid_line.text()
 
-        # Добавление проекта в базу данных
-        if customer_id is not None:
-            project_DAO.add_project(name, group_id, customer_id, int(cost), int(paid))
-        else:
-            print("замовника не обрано")
+       
+        
+        project_DAO.add_project(name, group_id, customer_id, int(cost), int(paid))
+        message.show_message("Успішно", "Проєкт створено")
