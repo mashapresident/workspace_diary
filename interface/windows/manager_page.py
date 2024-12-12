@@ -15,6 +15,13 @@ from managers.DAO_classes import project_DAO, tasks_DAO
 from managers.window_manager import window_manager
 
 
+class PageNames:
+    STUFF = "Stuff"
+    CUSTOMER = "Customer"
+    PROJECT = "Project"
+    GROUP = "Group"
+
+
 class manager_page(QMainWindow):
     def __init__(self, manager: stuff):
         super().__init__()
@@ -154,12 +161,18 @@ class manager_page(QMainWindow):
         from interface.windows.extra_windows.add_stuff import add_stuff
         from managers.report_manager import report_manager
 
-        self.add_stuff.clicked.connect(lambda: window_manager.open_page(add_stuff))
-        self.add_customer.clicked.connect(
-            lambda: window_manager.open_page(add_customer)
+        self.add_stuff.clicked.connect(
+            lambda: window_manager.open_page(add_stuff, PageNames.STUFF)
         )
-        self.add_project.clicked.connect(lambda: window_manager.open_page(add_project))
-        self.add_group.clicked.connect(lambda: window_manager.open_page(add_group))
+        self.add_customer.clicked.connect(
+            lambda: window_manager.open_page(add_customer, PageNames.CUSTOMER)
+        )
+        self.add_project.clicked.connect(
+            lambda: window_manager.open_page(add_project, PageNames.PROJECT)
+        )
+        self.add_group.clicked.connect(
+            lambda: window_manager.open_page(add_group, PageNames.GROUP)
+        )
         self.make_report.clicked.connect(report_manager.make_report)
 
     def closeEvent(self, event):
