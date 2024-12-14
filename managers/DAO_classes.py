@@ -222,13 +222,29 @@ class stuff_DAO:
 
 class project_DAO:
     @staticmethod
-    def get_id_by_name(name:str):
+    def get_id_by_name(name: str):
         try:
             with session_factory() as session:
-                return session.query(project).filter_by(name = name).first().id
+                return session.query(project).filter_by(name=name).first().id
         except Exception as e:
             print(f"Failed to fetch project by customer id: {e}")
             return None
+
+    @staticmethod
+    def get_name_by_id(project_id: int):
+        try:
+            with session_factory() as session:
+                project = session.query(project).filter_by(id=project_id).first()
+                if project:
+                    return project.name
+                else:
+                    print(f"No project found with id: {project_id}")
+                    return None
+        except Exception as e:
+            print(f"Failed to fetch project by id: {e}")
+            return None
+
+
     @staticmethod
     def add_project(name: str, group_id: int, customer_id: int, cost: int, paid: int):
         try:
@@ -366,6 +382,37 @@ class tasks_DAO:
             raise Exception(f"Database error: {e}")
 
     @staticmethod
+    def delete_task(task_id):
+        """Видаляє завдання з бази даних за його ID."""
+        try:
+            with session_factory() as session:
+                task_to_delete = session.query(task).filter_by(id=task_id).first()
+                if task_to_delete:
+                    session.delete(task_to_delete)
+                    session.commit()
+                else:
+                    raise Exception(f"Task with ID {task_id} not found.")
+        except Exception as e:
+            raise Exception(f"Database error: {e}")
+
+    @staticmethod
+    def edit_task(task_id, target_role, project_id, deadline, comment):
+        """Оновлює завдання у базі даних."""
+        try:
+            with session_factory() as session:
+                task_to_edit = session.query(task).filter_by(id=task_id).first()
+                if task_to_edit:
+                    task_to_edit.target_role = target_role
+                    task_to_edit.project_id = project_id
+                    task_to_edit.deadline = deadline
+                    task_to_edit.comment = comment
+                    session.commit()
+                else:
+                    raise Exception(f"Task with ID {task_id} not found.")
+        except Exception as e:
+            raise Exception(f"Database error: {e}")
+        
+    @staticmethod
     def get_all_tasks():
         """Повертає всі завдання з бази даних."""
         try:
@@ -378,28 +425,20 @@ class tasks_DAO:
     def get_tasks(stage: str, proj: project, target_role: str):
         """
         Повертає завдання для відповідного проекту залежно від ролі.
-        Менеджер отримує всі завдання, інші ролі отримують завдання, пов'язані лише з їх роллю.
         """
         try:
+            print(f"Fetching tasks for project_id={proj.id}, stage={stage}, target_role={target_role}")
             with session_factory() as session:
-                # Спочатку фільтруємо завдання за проектом
-                query = session.query(task).filter_by(project_id=proj.id)
-
-                # Фільтруємо за стадією, якщо передана
-                if stage:
-                    query = query.filter_by(stage=stage)
-
-                # Логіка залежно від ролі
+                # Базовий фільтр за проектом
+                query = session.query(task).filter_by(project_id=proj.id, stage=stage)
                 if target_role.lower() != "manager":
                     query = query.filter_by(role=target_role)
-
                 tasks = query.order_by(task.deadline).all()
+                print(f"Found {len(tasks)} tasks")
                 return tasks
         except Exception as e:
-            print(
-                f"Failed to fetch tasks for project {proj.id} with role {target_role}: {e}"
-            )
-            return None
+            print(f"Failed to fetch tasks: {e}")
+            return []
 
     @staticmethod
     def get_all_tasks():
@@ -425,6 +464,18 @@ class roles_DAO:
             print(f"Failed to fetch roles: {e}")
             return None
 
+    @staticmethod
+    def get_stuff_roles():
+        """
+        Повертає всі ролі з таблиці roles_list, за винятком ролі 'manager'.
+        """
+        try:
+            with session_factory() as session:
+                roles = session.query(roles_list).filter(roles_list.name != 'manager').all()
+                return roles
+        except Exception as e:
+            print(f"Failed to fetch roles excluding manager: {e}")
+            return None
 
 class task_stage_DAO:
     @staticmethod

@@ -32,7 +32,7 @@ class add_stuff(QMainWindow):
 
         self.name_line = parent_line("Імʼя")
         print(roles_DAO.get_all_roles())
-        self.role_choice = role_choice(roles_DAO.get_all_roles())
+        self.role_choice = role_choice(roles_DAO.get_stuff_roles())
 
         self.phone = phone_line()
 
@@ -47,7 +47,7 @@ class add_stuff(QMainWindow):
         self.connect_buttons()
 
     def add_widgets(self):
-        self.resize(1000, 600)
+        self.resize(1200, 800)
         self.setMinimumSize(QSize(1000, 600))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
         self.centralwidget = QWidget(self)

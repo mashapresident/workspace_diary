@@ -16,7 +16,7 @@ from managers.DAO_classes import groups_DAO, stuff_DAO, stuff_group_DAO
 class add_group(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.resize(1000, 600)
+        self.resize(1200, 800)
         self.setMinimumSize(QSize(1000, 600))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
         self.centralwidget = QWidget(self)

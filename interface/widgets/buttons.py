@@ -31,13 +31,13 @@ class button(QPushButton):
 class list_button(QPushButton):
     def __init__(self, label: str, parent: QWidget = None):
         super().__init__(label, parent)
-        self.setMaximumSize(QSize(240, 80))
-        self.setMinimumSize(QSize(240, 80))
+        self.setMaximumSize(QSize(220, 70))
+        self.setMinimumSize(QSize(220, 70))
         self.setStyleSheet(
             """ 
             QPushButton { 
                 background-color: transparent;
-                font: 20pt "Apple Symbols";
+                font: 16pt "Apple Symbols";
                 color: white;
             }
             QPushButton[active="true"] {
@@ -66,6 +66,25 @@ class plain_button(QPushButton):
             }
             """
         )
+        
+class option_button(QPushButton):
+    def __init__(self, label: str, color: str , parent: QWidget = None):
+        super().__init__(label, parent)
+        self.setStyleSheet(
+            f"""
+            QPushButton {{
+                background-color: rgb(93, 93, 93);
+                color: {color};
+                border: none;
+                font: 10pt "Apple Symbols";
+            }}
+            QPushButton:hover {{
+                color: rgb(93, 93, 93);
+                background-color: {color};
+            }}
+            """
+        )
+
 
 
 class icon_button(QPushButton):

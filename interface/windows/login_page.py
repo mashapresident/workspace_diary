@@ -14,7 +14,7 @@ class login_page(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.resize(1000, 600)
+        self.resize(1200, 800)
         self.setMinimumSize(QSize(600, 400))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
         self.centralwidget = QWidget(self)

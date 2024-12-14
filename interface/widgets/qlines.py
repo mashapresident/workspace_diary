@@ -118,7 +118,7 @@ class role_choice(check_box):
             
 class project_choice(check_box):
     def __init__(self, projects):
-        super().__init__("Оберіть роль")
+        super().__init__("Оберіть проєкт")
         self.dialog = QDialog(self)
 
         for project in projects:

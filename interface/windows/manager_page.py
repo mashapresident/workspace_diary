@@ -11,16 +11,9 @@ from database.tables import stuff
 from interface.widgets.buttons import icon_button, list_button
 from interface.widgets.task_container import task_container
 from interface.widgets.text import text
+from interface.windows.extra_windows.page_names import page_names
 from managers.DAO_classes import project_DAO, tasks_DAO
 from managers.window_manager import window_manager
-
-
-class PageNames:
-    STUFF = "Stuff"
-    CUSTOMER = "Customer"
-    PROJECT = "Project"
-    GROUP = "Group"
-    TASK = "Task"
 
 
 class manager_page(QMainWindow):
@@ -28,38 +21,35 @@ class manager_page(QMainWindow):
         super().__init__()
         self.manager = manager
         self.opened_project = project_DAO.get_first_project()
+        
+        # Центральний віджет і основний лейаут
         self.centralwidget = QWidget(self)
         self.setCentralWidget(self.centralwidget)
         self.main_layout = QVBoxLayout(self.centralwidget)
+        
+        # Привітальне повідомлення
         self.label = text(f"Вітаємо, {self.manager.fullname}", 18, "white")
-
-        # Іконки
+        
+        # Іконки для верхніх кнопок
         self.add_stuff = icon_button("./interface/assets/add_stuff.png")
         self.add_customer = icon_button("./interface/assets/add_stuff.png")
         self.add_project = icon_button("./interface/assets/add_project.png")
         self.add_group = icon_button("./interface/assets/add_group.png")
         self.make_report = icon_button("./interface/assets/make_report.png")
         self.add_task = icon_button("./interface/assets/add_task.png")
-
+        
+        # Список проєктів і кнопки
         self.projects_list = project_DAO.get_all_projects()
         self.button_widgets = []
-
+        
+        # Ініціалізація лівого лейауту для списку проєктів
         self.left_layout = QVBoxLayout()
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setVerticalScrollBarPolicy(
-            Qt.ScrollBarAsNeeded
-        )  # Вертикальний скрол
-        self.scroll_area.setHorizontalScrollBarPolicy(
-            Qt.ScrollBarAlwaysOff
-        )  # Вимкнено горизонтальний скрол
-
         self.scroll_widget = QWidget()
         self.scroll_widget.setLayout(self.left_layout)
         self.scroll_area.setWidget(self.scroll_widget)
-
-        self.right_layout = QHBoxLayout()  # Горизонтальний лейаут для контейнерів задач
-
+        
         # Додавання кнопок проєктів
         for project in self.projects_list:
             button_name = getattr(project, "name", str(project))  # Назва проєкту
@@ -68,12 +58,13 @@ class manager_page(QMainWindow):
             self.button_widgets.append(button)
             self.left_layout.addWidget(button)
 
+        # Контейнери задач
         self.assigned = task_container(
             "to do", tasks_DAO.get_tasks("given", self.opened_project, "manager"), self
         )
         self.process = task_container(
-            "in the progress",
-            tasks_DAO.get_tasks("in the progress", self.opened_project, "manager"),
+            "in the process",
+            tasks_DAO.get_tasks("in the process", self.opened_project, "manager"),
             self,
         )
         self.done = task_container(
@@ -84,12 +75,15 @@ class manager_page(QMainWindow):
             tasks_DAO.get_tasks("checked", self.opened_project, "manager"),
             self,
         )
+        
+        # Додавання всіх віджетів і кнопок
         self.add_widgets()
         self.connect_buttons()
-        
+
     def add_widgets(self):
-        self.resize(1000, 600)
-        self.setMinimumSize(QSize(600, 400))
+        """Метод для додавання віджетів у вікно."""
+        self.resize(1200, 800)
+        self.setMinimumSize(QSize(1200, 800))
         self.setStyleSheet("background-color: rgb(41, 42, 42)")
 
         # Привітання
@@ -112,34 +106,59 @@ class manager_page(QMainWindow):
         # Основний вміст
         self.content_layout = QHBoxLayout()
 
+        # Ліва частина зі списком проєктів
         self.scroll_area.setFixedWidth(260)  # Ширина блоку зі скролом
         self.scroll_area.setFixedHeight(490)
-
-        # Додавання скрол-зони
         self.content_layout.addWidget(self.scroll_area, alignment=Qt.AlignLeft)
-        self.content_layout.addLayout(self.right_layout, 4)  # Правий блок
-        self.main_layout.addLayout(self.content_layout)
 
+        # Права частина з контейнерами задач
+        self.right_layout = QHBoxLayout()
+        self.content_layout.addLayout(self.right_layout, 4)
+        self.main_layout.addLayout(self.content_layout)
 
         self.right_layout.addWidget(self.assigned)
         self.right_layout.addWidget(self.process)
         self.right_layout.addWidget(self.done)
         self.right_layout.addWidget(self.checked)
+
     @Slot()
     def handle_button_click(self):
+        """Обробка натискання на кнопку проєкту."""
         clicked_button = self.sender()
+        
+        # Deselect all buttons
         for button in self.button_widgets:
             button.setProperty("active", False)
+        
+        # Select the clicked button
         clicked_button.setProperty("active", True)
         
+        # Update the style of the clicked button
         for button in self.button_widgets:
             button.style().unpolish(button)
             button.style().polish(button)
+        
+        # Get the index of the clicked button
         button_index = self.button_widgets.index(clicked_button)
+        
+        # Get the selected project
         selected_project = self.projects_list[button_index]
         self.opened_project = selected_project
+        
+        # Update the task containers with tasks from the new project
+        self.update_task_containers()
+
+
+    def update_task_containers(self):
+        """Оновлює контейнери задач для вибраного проєкту."""
+        self.assigned.update_tasks(tasks_DAO.get_tasks("given", self.opened_project, "manager"))
+        self.process.update_tasks(tasks_DAO.get_tasks("in the process", self.opened_project, "manager"))
+        self.done.update_tasks(tasks_DAO.get_tasks("done", self.opened_project, "manager"))
+        self.checked.update_tasks(tasks_DAO.get_tasks("checked", self.opened_project, "manager"))
+
 
     def connect_buttons(self):
+        """Метод для з'єднання кнопок з діями."""
         from interface.windows.extra_windows.add_customer import add_customer
         from interface.windows.extra_windows.add_group import add_group
         from interface.windows.extra_windows.add_project import add_project
@@ -148,22 +167,23 @@ class manager_page(QMainWindow):
         from managers.report_manager import report_manager
 
         self.add_stuff.clicked.connect(
-            lambda: window_manager.open_page(add_stuff, PageNames.STUFF)
+            lambda: window_manager.open_page(add_stuff, page_names.STUFF)
         )
         self.add_customer.clicked.connect(
-            lambda: window_manager.open_page(add_customer, PageNames.CUSTOMER)
+            lambda: window_manager.open_page(add_customer, page_names.CUSTOMER)
         )
         self.add_project.clicked.connect(
-            lambda: window_manager.open_page(add_project, PageNames.PROJECT)
+            lambda: window_manager.open_page(add_project, page_names.PROJECT)
         )
         self.add_group.clicked.connect(
-            lambda: window_manager.open_page(add_group, PageNames.GROUP)
+            lambda: window_manager.open_page(add_group, page_names.GROUP)
         )
         self.add_task.clicked.connect(
-            lambda: window_manager.open_page(add_task, PageNames.TASK)
+            lambda: window_manager.open_page(add_task, page_names.TASK)
         )
         self.make_report.clicked.connect(report_manager.make_report)
 
     def closeEvent(self, event):
+        """Закриття всіх активних вікон при закритті."""
         window_manager.close_all_active_windows()
         event.accept()
