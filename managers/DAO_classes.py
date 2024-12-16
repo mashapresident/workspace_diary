@@ -62,8 +62,9 @@ class customer_DAO:
             with session_factory() as session:
                 return (
                     session.query(customer)
-                    .filter_by(name = name, surname=surname)
-                    .first().id
+                    .filter_by(name=name, surname=surname)
+                    .first()
+                    .id
                 )
         except Exception as e:
             print(f"Failed to fetch customer by id: {e}")
@@ -81,7 +82,7 @@ class customer_DAO:
     def get_customer_by_email(entered_email: str):
         try:
             with session_factory() as session:
-                return session.query(customer).filter_by(email=entered_email).first()
+                return session.query(customer).filter_by(mail=entered_email).first()
         except Exception:
             return None
 
@@ -139,7 +140,7 @@ class stuff_DAO:
     def get_stuff_by_email(entered_email: str):
         try:
             with session_factory() as session:
-                return session.query(stuff).filter_by(email=entered_email).first()
+                return session.query(stuff).filter_by(mail=entered_email).first()
         except Exception:
             return None
 
@@ -155,8 +156,8 @@ class stuff_DAO:
     @staticmethod
     def get_staff_id_by_fullname(fullname: str):
         list = fullname.split(" ")
-        name = list[0]
-        surname = list[1]
+        name = list[1]
+        surname = list[0]
         """Возвращает идентификатор сотрудника по имени и фамилии."""
         try:
             with session_factory() as session:
@@ -243,7 +244,6 @@ class project_DAO:
         except Exception as e:
             print(f"Failed to fetch project by id: {e}")
             return None
-
 
     @staticmethod
     def add_project(name: str, group_id: int, customer_id: int, cost: int, paid: int):
@@ -366,6 +366,21 @@ class groups_DAO:
 
 class tasks_DAO:
     @staticmethod
+    def get_tasks_by_project_id(project_id):
+        try:
+            with session_factory() as session:
+                tasks = (
+                    session.query(task)
+                    .filter_by(project_id=project_id)
+                    .order_by(task.deadline)
+                    .all()
+                )
+                return tasks
+        except Exception as e:
+            print(f"Failed to fetch tasks for project_id {project_id}: {e}")
+            return None
+
+    @staticmethod
     def add_task(target_role, project_id, deadline, comment):
         """Додає нове завдання до бази даних."""
         try:
@@ -411,7 +426,7 @@ class tasks_DAO:
                     raise Exception(f"Task with ID {task_id} not found.")
         except Exception as e:
             raise Exception(f"Database error: {e}")
-        
+
     @staticmethod
     def get_all_tasks():
         """Повертає всі завдання з бази даних."""
@@ -427,7 +442,9 @@ class tasks_DAO:
         Повертає завдання для відповідного проекту залежно від ролі.
         """
         try:
-            print(f"Fetching tasks for project_id={proj.id}, stage={stage}, target_role={target_role}")
+            print(
+                f"Fetching tasks for project_id={proj.id}, stage={stage}, target_role={target_role}"
+            )
             with session_factory() as session:
                 # Базовий фільтр за проектом
                 query = session.query(task).filter_by(project_id=proj.id, stage=stage)
@@ -471,11 +488,14 @@ class roles_DAO:
         """
         try:
             with session_factory() as session:
-                roles = session.query(roles_list).filter(roles_list.name != 'manager').all()
+                roles = (
+                    session.query(roles_list).filter(roles_list.role != "manager").all()
+                )
                 return roles
         except Exception as e:
             print(f"Failed to fetch roles excluding manager: {e}")
             return None
+
 
 class task_stage_DAO:
     @staticmethod

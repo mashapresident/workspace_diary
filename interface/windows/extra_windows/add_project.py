@@ -1,19 +1,15 @@
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtWidgets import (
-    QMainWindow,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget
 
 from interface.widgets.buttons import button, icon_button
-from interface.widgets.message import message
 from interface.widgets.qlines import (
     cost_line,
     customer_choice,
     groups_choice,
     parent_line,
 )
-from managers.DAO_classes import customer_DAO, groups_DAO, project_DAO
+from managers.DAO_classes import customer_DAO, groups_DAO
+from managers.extra_windows_manager import extra_windows_manager
 
 
 class add_project(QMainWindow):
@@ -22,7 +18,6 @@ class add_project(QMainWindow):
         self.back_button = icon_button("./interface/assets/back_button.png")
         self.name_line = parent_line("Назва")
         self.group = groups_choice(groups_DAO.get_groups())
-        print(groups_DAO.get_groups())
         self.customer = customer_choice(customer_DAO.get_all_customers())
         self.cost_line = cost_line("Вартість")
         self.paid_line = cost_line("Оплачено")
@@ -51,21 +46,13 @@ class add_project(QMainWindow):
         self.verticalLayoutWidget.addWidget(self.add_button, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
-        self.add_button.clicked.connect(self.add_project_to_database)
+        self.add_button.clicked.connect(
+            lambda: extra_windows_manager.add_project(
+                name=self.name_line.text(),
+                group_name=self.group.currentText(),
+                customer_name=self.customer.currentText(),
+                cost=self.cost_line.text(),
+                paid=self.paid_line.text(),
+            )
+        )
         self.back_button.clicked.connect(self.close)
-
-    def add_project_to_database(self):
-        if not( self.name_line.text() or self.name_line.text() or self.paid_line.text()):
-            message.show_message("Помилка", "Не всі поня заповнені")
-            return
-        
-        name = self.name_line.text()
-        group_id = groups_DAO.get_group_id_by_name(self.group.currentText()) 
-        customer_id = customer_DAO.get_customer_id_by_fullname(self.customer.currentText())
-        cost =  self.name_line.text()
-        paid = self.paid_line.text()
-
-       
-        
-        project_DAO.add_project(name, group_id, customer_id, int(cost), int(paid))
-        message.show_message("Успішно", "Проєкт створено")

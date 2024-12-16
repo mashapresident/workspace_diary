@@ -1,18 +1,7 @@
-from PySide6.QtCore import QDate, QSize, Qt
-from PySide6.QtWidgets import (
-    QComboBox,
-    QFrame,
-    QHBoxLayout,
-    QLabel,
-    QMainWindow,
-    QPushButton,
-    QSizePolicy,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtCore import QSize, Qt
+from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget
 
 from interface.widgets.buttons import button, icon_button
-from interface.widgets.message import message
 from interface.widgets.qlines import (
     datepicker,
     email_line,
@@ -20,7 +9,8 @@ from interface.widgets.qlines import (
     phone_line,
     role_choice,
 )
-from managers.DAO_classes import roles_DAO, stuff_DAO
+from managers.DAO_classes import roles_DAO
+from managers.extra_windows_manager import extra_windows_manager
 
 
 class add_stuff(QMainWindow):
@@ -31,7 +21,7 @@ class add_stuff(QMainWindow):
         self.surname_line = parent_line("Прізвище")
 
         self.name_line = parent_line("Імʼя")
-        print(roles_DAO.get_all_roles())
+
         self.role_choice = role_choice(roles_DAO.get_stuff_roles())
 
         self.phone = phone_line()
@@ -69,56 +59,15 @@ class add_stuff(QMainWindow):
         self.verticalLayoutWidget.addWidget(self.add_button, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
-        self.add_button.clicked.connect(self.add_stuff)
-        self.back_button.clicked.connect(self.close)
-
-    def add_stuff(self):
-        # Retrieve input data
-        name = self.name_line.text().strip()
-        surname = self.surname_line.text().strip()
-        phone = self.phone.text().strip()
-        address = self.adress.text().strip()
-        email = self.mail.text().strip()
-        birth_date = self.date.date().toString("yyyy-MM-dd")
-        # Check if all required fields are filled
-        if not name or not surname or not phone:
-            message.show_message("Помилка", "Не всі обовʼязкові поля заповнені")
-            return
-
-        # Check if email is valid
-        if "@" not in email or "." not in email:
-            message.show_message("Помилка", "Некоректний email")
-            return
-
-        if stuff_DAO.get_stuff_by_phone(phone):
-            message.show_message("Помилка", "Клієнт з таким номером телефона вже існує")
-            return
-        if stuff_DAO.get_stuff_by_email(email):
-            message.show_message("Помилка", "Клієнт з такою поштою вже існує")
-            return
-
-        # Check if the customer is over 18
-        current_date = QDate.currentDate()
-        birth_date_obj = QDate.fromString(birth_date, "yyyy-MM-dd")
-        age = current_date.year() - birth_date_obj.year()
-
-        # Adjust age calculation for birthdays that haven't occurred yet this year
-        if current_date.month() < birth_date_obj.month() or (
-            current_date.month() == birth_date_obj.month()
-            and current_date.day() < birth_date_obj.day()
-        ):
-            age -= 1
-
-        if age < 18:
-            message.show_message("Помилка", "Вік має бути 18 років або більше")
-            return
-        stuff_DAO.add_stuff(
-            name,
-            surname,
-            "manager",
-            phone,
-            address,
-            email,
-            birth_date,
+        self.add_button.clicked.connect(
+            lambda: extra_windows_manager.add_stuff(
+                name=self.name_line.text().strip(),
+                surname=self.surname_line.text().strip(),
+                role=self.role_choice.currentText(),
+                phone=self.phone.text().strip(),
+                address=self.adress.text().strip(),
+                email=self.mail.text().strip(),
+                birth_date=self.date.date(),
+            )
         )
-        message.show_message("Успішно", "Працівника зареєстровано")
+        self.back_button.clicked.connect(self.close)
