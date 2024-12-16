@@ -10,7 +10,8 @@ from PySide6.QtWidgets import (
 
 from interface.widgets.buttons import button, icon_button
 from interface.widgets.qlines import parent_line
-from managers.DAO_classes import groups_DAO, stuff_DAO, stuff_group_DAO
+from managers.DAO_classes import stuff_DAO
+from managers.extra_windows_manager import extra_windows_manager
 
 
 class add_group(QMainWindow):
@@ -38,12 +39,8 @@ class add_group(QMainWindow):
             "border-radius: 5px\n"
         )
 
-        # Добавление сотрудников в список с чекбоксами
         for staff_member in stuff_DAO.get_all_stuff_without_manager():
-            item = QListWidgetItem(
-                staff_member.fullname
-            )  # Предполагается, что объекты staff имеют атрибут name
-            item.setCheckState(Qt.Unchecked)
+            item = QListWidgetItem(staff_member.fullname)
             self.group_list.addItem(item)
 
         self.add_group = button("Додати")
@@ -61,33 +58,10 @@ class add_group(QMainWindow):
         self.verticalLayoutWidget.addWidget(self.add_group, alignment=Qt.AlignCenter)
 
     def connect_buttons(self):
-        self.add_group.clicked.connect(self.add_group_to_database)
+        self.add_group.clicked.connect(
+            lambda: extra_windows_manager.add_group(
+                self.name_of_group.text(),
+                [item.text() for item in self.group_list.selectedItems()],
+            )
+        )
         self.back_button.clicked.connect(self.close)
-
-    def add_group_to_database(self):
-        from interface.widgets.message import message
-
-        # Проверяем, что название группы и список сотрудников заполнены
-        if not self.name_of_group.text():
-            message.show_message("Помилка", "Назва групи не може бути порожньою")
-            return
-        elif self.group_list.count() == 0:
-            message.show_message("Помилка", "Група не може бути порожньою")
-            return
-
-        # Добавляем новую группу и получаем её ID
-        group_name = self.name_of_group.text()
-        groups_DAO.add_group(group_name)
-
-        group_id = groups_DAO.get_group_id_by_name(group_name)
-
-        # Добавляем сотрудников в группу
-        for index in range(self.group_list.count()):
-            item = self.group_list.item(index)
-            if item.checkState() == Qt.Checked:
-                # Получаем ID сотрудника по его имени
-                staff_id = stuff_DAO.get_staff_id_by_fullname(item.text())
-                # Добавляем сотрудника в группу
-                stuff_group_DAO.add_stuff_to_group(staff_id, group_id)
-
-        message.show_message("Успішно", f"Група '{group_name}' додана")

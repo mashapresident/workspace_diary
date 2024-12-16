@@ -54,6 +54,9 @@ class groups_list(Base):
 
     stuffs = relationship("stuff", secondary="stuff_group")
 
+    def __init__(self, name):
+        self.name = name
+
 
 class project(Base):
     __tablename__ = "projects"
@@ -101,6 +104,10 @@ class stuff_group(Base):
         primary_key=True,
     )
     group_id = Column(Integer, ForeignKey("groups_list.id"), primary_key=True)
+
+    def __init__(self, stuff_id, group_id):
+        self.stuff_id = stuff_id
+        self.group_id = group_id
 
 
 class stuff(Base):

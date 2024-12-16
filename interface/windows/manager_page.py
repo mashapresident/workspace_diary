@@ -20,16 +20,16 @@ class manager_page(QMainWindow):
     def __init__(self, manager: stuff):
         super().__init__()
         self.manager = manager
-        self.opened_project = project_DAO.get_first_project()
-        
+        self.opened_project = None
+
         # Центральний віджет і основний лейаут
         self.centralwidget = QWidget(self)
         self.setCentralWidget(self.centralwidget)
         self.main_layout = QVBoxLayout(self.centralwidget)
-        
+
         # Привітальне повідомлення
         self.label = text(f"Вітаємо, {self.manager.fullname}", 18, "white")
-        
+
         # Іконки для верхніх кнопок
         self.add_stuff = icon_button("./interface/assets/add_stuff.png")
         self.add_customer = icon_button("./interface/assets/add_stuff.png")
@@ -37,11 +37,11 @@ class manager_page(QMainWindow):
         self.add_group = icon_button("./interface/assets/add_group.png")
         self.make_report = icon_button("./interface/assets/make_report.png")
         self.add_task = icon_button("./interface/assets/add_task.png")
-        
+
         # Список проєктів і кнопки
         self.projects_list = project_DAO.get_all_projects()
         self.button_widgets = []
-        
+
         # Ініціалізація лівого лейауту для списку проєктів
         self.left_layout = QVBoxLayout()
         self.scroll_area = QScrollArea()
@@ -49,7 +49,7 @@ class manager_page(QMainWindow):
         self.scroll_widget = QWidget()
         self.scroll_widget.setLayout(self.left_layout)
         self.scroll_area.setWidget(self.scroll_widget)
-        
+
         # Додавання кнопок проєктів
         for project in self.projects_list:
             button_name = getattr(project, "name", str(project))  # Назва проєкту
@@ -75,7 +75,7 @@ class manager_page(QMainWindow):
             tasks_DAO.get_tasks("checked", self.opened_project, "manager"),
             self,
         )
-        
+
         # Додавання всіх віджетів і кнопок
         self.add_widgets()
         self.connect_buttons()
@@ -125,37 +125,43 @@ class manager_page(QMainWindow):
     def handle_button_click(self):
         """Обробка натискання на кнопку проєкту."""
         clicked_button = self.sender()
-        
+
         # Deselect all buttons
         for button in self.button_widgets:
             button.setProperty("active", False)
-        
+
         # Select the clicked button
         clicked_button.setProperty("active", True)
-        
+
         # Update the style of the clicked button
         for button in self.button_widgets:
             button.style().unpolish(button)
             button.style().polish(button)
-        
+
         # Get the index of the clicked button
         button_index = self.button_widgets.index(clicked_button)
-        
+
         # Get the selected project
         selected_project = self.projects_list[button_index]
         self.opened_project = selected_project
-        
+
         # Update the task containers with tasks from the new project
         self.update_task_containers()
 
-
     def update_task_containers(self):
         """Оновлює контейнери задач для вибраного проєкту."""
-        self.assigned.update_tasks(tasks_DAO.get_tasks("given", self.opened_project, "manager"))
-        self.process.update_tasks(tasks_DAO.get_tasks("in the process", self.opened_project, "manager"))
-        self.done.update_tasks(tasks_DAO.get_tasks("done", self.opened_project, "manager"))
-        self.checked.update_tasks(tasks_DAO.get_tasks("checked", self.opened_project, "manager"))
-
+        self.assigned.update_tasks(
+            tasks_DAO.get_tasks("given", self.opened_project, "manager")
+        )
+        self.process.update_tasks(
+            tasks_DAO.get_tasks("in the process", self.opened_project, "manager")
+        )
+        self.done.update_tasks(
+            tasks_DAO.get_tasks("done", self.opened_project, "manager")
+        )
+        self.checked.update_tasks(
+            tasks_DAO.get_tasks("checked", self.opened_project, "manager")
+        )
 
     def connect_buttons(self):
         """Метод для з'єднання кнопок з діями."""

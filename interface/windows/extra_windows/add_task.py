@@ -1,11 +1,17 @@
 from datetime import datetime
+
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtWidgets import (
-    QVBoxLayout, QHBoxLayout, QMainWindow, QWidget, QTextEdit
+from PySide6.QtWidgets import QHBoxLayout, QMainWindow, QTextEdit, QVBoxLayout, QWidget
+
+from interface.widgets.buttons import button, icon_button
+from interface.widgets.qlines import (
+    comment_line,
+    datepicker,
+    project_choice,
+    role_choice,
 )
-from interface.widgets.buttons import icon_button, button
-from interface.widgets.qlines import datepicker, role_choice, project_choice, comment_line
-from managers.DAO_classes import tasks_DAO, project_DAO, roles_DAO
+from managers.DAO_classes import project_DAO, roles_DAO, tasks_DAO
+
 
 class add_task(QMainWindow):
     def __init__(self):
@@ -19,11 +25,9 @@ class add_task(QMainWindow):
         self.add_button = button("Додати завдання")
         self.back_button = icon_button("./interface/assets/back_button.png")
 
-        
         self.add_widgets()
         self.connect_buttons()
 
-   
     def add_widgets(self):
         """Додавання віджетів до сторінки."""
         self.resize(1200, 800)
@@ -63,14 +67,16 @@ class add_task(QMainWindow):
         project_id = project_DAO.get_id_by_name(self.project_picker.currentText())
 
         # Перевірка заповненості полів
-        if not target_role or not project_id or not deadline  or not comment:
+        if not target_role or not project_id or not deadline or not comment:
             message.show_message("Помилка", "Не всі поля заповнені")
             return
 
         # Перевірка дати
         today = datetime.today().date()
         if datetime.strptime(deadline, "%Y-%m-%d").date() < today:
-            message.show_message("Помилка", "Дедлайн не може бути раніше за сьогоднішню дату")
+            message.show_message(
+                "Помилка", "Дедлайн не може бути раніше за сьогоднішню дату"
+            )
             return
 
         # Додавання завдання
@@ -79,7 +85,7 @@ class add_task(QMainWindow):
                 target_role=target_role,
                 project_id=project_id,
                 deadline=deadline,
-                comment=comment
+                comment=comment,
             )
             message.show_message("Успіх", "Завдання успішно додано")
             self.close()
