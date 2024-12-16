@@ -123,7 +123,6 @@ class extra_windows_manager:
 
         for item in group_list:
             staff_id = stuff_DAO.get_staff_id_by_fullname(item)
-            print(staff_id)
             stuff_group_DAO.add_stuff_to_group(staff_id, group_id)
 
         message.show_message("Успішно", f"Група '{group_name}' додана")

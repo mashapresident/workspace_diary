@@ -156,8 +156,8 @@ class stuff_DAO:
     @staticmethod
     def get_staff_id_by_fullname(fullname: str):
         list = fullname.split(" ")
-        name = list[0]
-        surname = list[1]
+        name = list[1]
+        surname = list[0]
         """Возвращает идентификатор сотрудника по имени и фамилии."""
         try:
             with session_factory() as session:
