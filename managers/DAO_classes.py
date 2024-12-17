@@ -233,11 +233,14 @@ class project_DAO:
 
     @staticmethod
     def get_name_by_id(project_id: int):
+        print(project_id)
         try:
             with session_factory() as session:
-                project = session.query(project).filter_by(id=project_id).first()
-                if project:
-                    return project.name
+                project_instance = (
+                    session.query(project).filter_by(id=int(project_id)).first()
+                )
+                if project_instance:
+                    return project_instance.name
                 else:
                     print(f"No project found with id: {project_id}")
                     return None

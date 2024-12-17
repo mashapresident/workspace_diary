@@ -1,10 +1,18 @@
 from datetime import datetime
+
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QMainWindow, QWidget
-from interface.widgets.buttons import icon_button, button
-from interface.widgets.qlines import datepicker, role_choice, project_choice, comment_line
-from managers.DAO_classes import tasks_DAO, project_DAO, roles_DAO
+from PySide6.QtWidgets import QHBoxLayout, QMainWindow, QVBoxLayout, QWidget
+
+from interface.widgets.buttons import button, icon_button
 from interface.widgets.message import message
+from interface.widgets.qlines import (
+    comment_line,
+    datepicker,
+    project_choice,
+    role_choice,
+)
+from managers.DAO_classes import project_DAO, roles_DAO, tasks_DAO
+
 
 class edit_task(QMainWindow):
     def __init__(self, task):
@@ -32,14 +40,15 @@ class edit_task(QMainWindow):
 
     def populate_fields(self):
         """Заповнює поля форми даними завдання."""
-        self.project_picker.setCurrentText(project_DAO.get_name_by_id(self.task.project_id))
+        self.project_picker.setCurrentText(
+            project_DAO.get_name_by_id(self.task.project_id)
+        )
         self.role_dropdown.setCurrentText(self.task.target_role)
-        
+
         # Directly use the date from self.task.deadline if it's already a date object
         self.deadline_picker.setDate(self.task.deadline)
-        
-        self.comment_input.setText(self.task.comment)
 
+        self.comment_input.setText(self.task.comment)
 
     def add_widgets(self):
         """Додавання віджетів до сторінки."""
@@ -87,7 +96,9 @@ class edit_task(QMainWindow):
         # Перевірка дати
         today = datetime.today().date()
         if datetime.strptime(deadline, "%Y-%m-%d").date() < today:
-            message.show_message("Помилка", "Дедлайн не може бути раніше за сьогоднішню дату")
+            message.show_message(
+                "Помилка", "Дедлайн не може бути раніше за сьогоднішню дату"
+            )
             return
 
         # Оновлення завдання

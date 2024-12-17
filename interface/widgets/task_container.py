@@ -40,9 +40,6 @@ class task_container(QWidget):
     def update_tasks(self, tasks_list: list):
         """Оновлює список завдань в контейнері."""
         # Очистити поточний список завдань
-        if not tasks_list:
-            return
-
         for i in reversed(range(self.scroll_layout.count())):
             widget = self.scroll_layout.itemAt(i).widget()
             if widget:
