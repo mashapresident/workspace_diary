@@ -1,13 +1,16 @@
-from PySide6.QtWidgets import QVBoxLayout, QWidget, QScrollArea
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QScrollArea, QVBoxLayout, QWidget
+
 from interface.widgets.task import task_view
 from interface.widgets.text import text
+
+
 class task_container(QWidget):
     def __init__(self, label: str, tasks_list: list, parent=None):
         super().__init__(parent)
         self.setStyleSheet("background-color: transparent;")
         self.setFixedWidth(250)
-        
+
         # Основний макет для контейнера
         self.main_layout = QVBoxLayout(self)
 
@@ -37,14 +40,17 @@ class task_container(QWidget):
     def update_tasks(self, tasks_list: list):
         """Оновлює список завдань в контейнері."""
         # Очистити поточний список завдань
+        if not tasks_list:
+            return
+
         for i in reversed(range(self.scroll_layout.count())):
             widget = self.scroll_layout.itemAt(i).widget()
             if widget:
                 widget.deleteLater()
-        
+
         # Додавання нових завдань
         for t in tasks_list:
-            task_widget = task_view(t)  
+            task_widget = task_view(t)
             self.scroll_layout.addWidget(task_widget)
 
         # Оновлюємо вид, щоб завдання відображались з самого верху

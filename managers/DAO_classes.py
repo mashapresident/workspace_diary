@@ -441,6 +441,8 @@ class tasks_DAO:
         """
         Повертає завдання для відповідного проекту залежно від ролі.
         """
+        if not proj:
+            return []
         try:
             print(
                 f"Fetching tasks for project_id={proj.id}, stage={stage}, target_role={target_role}"
