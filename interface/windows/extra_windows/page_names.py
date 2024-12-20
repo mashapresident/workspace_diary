@@ -5,3 +5,4 @@ class page_names:
     GROUP = "Group"
     TASK = "Task"
     EDIT_TASK = "Edit task"
+    REPORT = "Make report"

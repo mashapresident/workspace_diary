@@ -168,9 +168,9 @@ class manager_page(QMainWindow):
         from interface.windows.extra_windows.add_customer import add_customer
         from interface.windows.extra_windows.add_group import add_group
         from interface.windows.extra_windows.add_project import add_project
+        from interface.windows.extra_windows.add_report import add_report
         from interface.windows.extra_windows.add_stuff import add_stuff
         from interface.windows.extra_windows.add_task import add_task
-        from managers.report_manager import report_manager
 
         self.add_stuff.clicked.connect(
             lambda: window_manager.open_page(add_stuff, page_names.STUFF)
@@ -187,7 +187,9 @@ class manager_page(QMainWindow):
         self.add_task.clicked.connect(
             lambda: window_manager.open_page(add_task, page_names.TASK)
         )
-        self.make_report.clicked.connect(report_manager.make_report)
+        self.make_report.clicked.connect(
+            lambda: window_manager.open_page(add_report, page_names.REPORT)
+        )
 
     def closeEvent(self, event):
         """Закриття всіх активних вікон при закритті."""
