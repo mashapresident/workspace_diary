@@ -231,6 +231,18 @@ class project_DAO:
             print(f"Failed to fetch project by customer id: {e}")
             return None
 
+
+    # @staticmethod
+    # def get_projects_by_stuff_id(id: int):
+    #     groups_DAO.
+    #     try:
+    #         with session_factory() as session:
+    #             return session.query(project).filter_by(group_id = ).first().id
+    #     except Exception as e:
+    #         print(f"Failed to fetch project by customer id: {e}")
+    #         return None
+    
+    
     @staticmethod
     def get_name_by_id(project_id: int):
         print(project_id)
@@ -280,6 +292,15 @@ class project_DAO:
                 return session.query(project).all()
         except Exception as e:
             return None
+
+    @staticmethod
+    def get_all_projects_with_stuff_id(stuff_id: int):
+        try:
+            with session_factory() as session:
+                return session.query(project).filter().all()
+        except Exception as e:
+            return None
+
 
     @staticmethod
     def get_first_project():
