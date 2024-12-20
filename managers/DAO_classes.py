@@ -471,6 +471,69 @@ class tasks_DAO:
         except Exception as e:
             raise Exception(f"Database error: {e}")
 
+    @staticmethod
+    def get_tasks_by_staff_id(staff_id):
+        """
+        Повертає завдання, пов'язані зі співробітником за його ID.
+        """
+        try:
+            with session_factory() as session:
+                # Отримуємо завдання, де Is Done або Is Checked дорівнює staff_id
+                tasks = (
+                    session.query(task)
+                    .filter((task.is_done == staff_id) | (task.is_checked == staff_id))
+                    .order_by(task.deadline)
+                    .all()
+                )
+                return tasks
+        except Exception as e:
+            print(f"Failed to fetch tasks for staff_id {staff_id}: {e}")
+            return None
+
+    @staticmethod
+    def get_tasks_by_staff_id_with_names(staff_id):
+        """
+        Повертає завдання, пов'язані зі співробітником за його ID, з іменами в полях 'Is Done' та 'Is Checked'.
+        """
+        try:
+            with session_factory() as session:
+                # Отримуємо всі завдання, де Is Done або Is Checked дорівнює staff_id
+                tasks = (
+                    session.query(task)
+                    .filter((task.is_done == staff_id) | (task.is_checked == staff_id))
+                    .order_by(task.deadline)
+                    .all()
+                )
+
+                # Замінюємо staff_id на імена та прізвища
+                task_list_with_names = []
+                for t in tasks:
+                    is_done_name = session.query(stuff).filter_by(id=t.is_done).first()
+                    is_checked_name = (
+                        session.query(stuff).filter_by(id=t.is_checked).first()
+                    )
+
+                    task_list_with_names.append(
+                        {
+                            "deadline": t.deadline,
+                            "is_done": (
+                                f"{is_done_name.name} {is_done_name.surname}"
+                                if is_done_name
+                                else "N/A"
+                            ),
+                            "is_checked": (
+                                f"{is_checked_name.name} {is_checked_name.surname}"
+                                if is_checked_name
+                                else "N/A"
+                            ),
+                            "Comment": t.comment,
+                        }
+                    )
+                return task_list_with_names
+        except Exception as e:
+            print(f"Failed to fetch tasks for staff_id {staff_id}: {e}")
+            return None
+
 
 class roles_DAO:
     @staticmethod

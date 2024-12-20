@@ -114,9 +114,6 @@ class extra_windows_manager:
             message.show_message("Помилка", "Група не може бути порожньою")
             return
 
-        print(group_name)
-        print(group_list)
-
         groups_DAO.add_group(group_name)
 
         group_id = groups_DAO.get_group_id_by_name(group_name)
