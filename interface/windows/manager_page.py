@@ -31,6 +31,7 @@ class manager_page(QMainWindow):
         self.label = text(f"Вітаємо, {self.manager.fullname}", 18, "white")
 
         # Іконки для верхніх кнопок
+        self.reload = icon_button("./interface/assets/reload.png")
         self.add_stuff = icon_button("./interface/assets/add_stuff.png")
         self.add_customer = icon_button("./interface/assets/add_stuff.png")
         self.add_project = icon_button("./interface/assets/add_project.png")
@@ -95,6 +96,7 @@ class manager_page(QMainWindow):
         top_layout_buttons = QHBoxLayout()
         top_layout_buttons.setSpacing(10)
         top_layout_buttons.addStretch()
+        top_layout_buttons.addWidget(self.reload, alignment=Qt.AlignLeft)
         top_layout_buttons.addWidget(self.add_stuff)
         top_layout_buttons.addWidget(self.add_customer)
         top_layout_buttons.addWidget(self.add_project)
@@ -172,6 +174,7 @@ class manager_page(QMainWindow):
         from interface.windows.extra_windows.add_stuff import add_stuff
         from interface.windows.extra_windows.add_task import add_task
 
+        self.reload.clicked.connect(self.update_task_containers)
         self.add_stuff.clicked.connect(
             lambda: window_manager.open_page(add_stuff, page_names.STUFF)
         )
