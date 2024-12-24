@@ -37,7 +37,7 @@ class list_button(QPushButton):
             """ 
             QPushButton { 
                 background-color: transparent;
-                font: 16pt "Apple Symbols";
+                font: 20pt "Apple Symbols";
                 color: white;
             }
             QPushButton[active="true"] {
@@ -70,6 +70,8 @@ class plain_button(QPushButton):
 class option_button(QPushButton):
     def __init__(self, label: str, color: str , parent: QWidget = None):
         super().__init__(label, parent)
+        self.setFixedHeight(30)
+        self.setFixedWidth(70)
         self.setStyleSheet(
             f"""
             QPushButton {{
