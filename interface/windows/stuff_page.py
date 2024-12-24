@@ -11,7 +11,6 @@ from database.tables import stuff
 from interface.widgets.buttons import icon_button, list_button
 from interface.widgets.task_container import task_container
 from interface.widgets.text import text
-from interface.windows.extra_windows.page_names import page_names
 from managers.DAO_classes import project_DAO, tasks_DAO
 from managers.window_manager import window_manager
 
@@ -28,10 +27,13 @@ class stuff_page(QMainWindow):
         self.main_layout = QVBoxLayout(self.centralwidget)
 
         # Привітальне повідомлення
-        self.label = text(f"Вітаємо, {self.stuff.fullname}", 18, "white")
+        self.label = text(f"Вітаємо, {self.manager.fullname}", 18, "white")
 
+        # Іконки для верхніх кнопок
+        self.reload = icon_button("./interface/assets/reload.png")
+        
         # Список проєктів і кнопки
-        self.projects_list = project_DAO.get_all_projects()
+        self.projects_list = project_DAO.get_projects_by_stuff_id(self.stuff.id)
         self.button_widgets = []
 
         # Ініціалізація лівого лейауту для списку проєктів
@@ -52,19 +54,19 @@ class stuff_page(QMainWindow):
 
         # Контейнери задач
         self.assigned = task_container(
-            "to do", tasks_DAO.get_tasks("given", self.opened_project, "manager"), self
+            "to do", tasks_DAO.get_tasks("given", self.opened_project, self.stuff.role), self
         )
         self.process = task_container(
             "in the process",
-            tasks_DAO.get_tasks("in the process", self.opened_project, "manager"),
+            tasks_DAO.get_tasks("in the process", self.opened_project, self.stuff.role),
             self,
         )
         self.done = task_container(
-            "done", tasks_DAO.get_tasks("done", self.opened_project, "manager"), self
+            "done", tasks_DAO.get_tasks("done", self.opened_project, self.stuff.role), self
         )
         self.checked = task_container(
             "checked",
-            tasks_DAO.get_tasks("checked", self.opened_project, "manager"),
+            tasks_DAO.get_tasks("checked", self.opened_project, self.stuff.role),
             self,
         )
 
@@ -87,12 +89,7 @@ class stuff_page(QMainWindow):
         top_layout_buttons = QHBoxLayout()
         top_layout_buttons.setSpacing(10)
         top_layout_buttons.addStretch()
-        top_layout_buttons.addWidget(self.add_stuff)
-        top_layout_buttons.addWidget(self.add_customer)
-        top_layout_buttons.addWidget(self.add_project)
-        top_layout_buttons.addWidget(self.add_group)
-        top_layout_buttons.addWidget(self.make_report)
-        top_layout_buttons.addWidget(self.add_task)
+        top_layout_buttons.addWidget(self.reload, alignment=Qt.AlignLeft)
         self.main_layout.addLayout(top_layout_buttons)
 
         # Основний вміст
@@ -156,32 +153,9 @@ class stuff_page(QMainWindow):
         )
 
     def connect_buttons(self):
-        """Метод для з'єднання кнопок з діями."""
-        from interface.windows.extra_windows.add_customer import add_customer
-        from interface.windows.extra_windows.add_group import add_group
-        from interface.windows.extra_windows.add_project import add_project
-        from interface.windows.extra_windows.add_stuff import add_stuff
-        from interface.windows.extra_windows.add_task import add_task
-        from managers.report_manager import report_manager
 
-        self.add_stuff.clicked.connect(
-            lambda: window_manager.open_page(add_stuff, page_names.STUFF)
-        )
-        self.add_customer.clicked.connect(
-            lambda: window_manager.open_page(add_customer, page_names.CUSTOMER)
-        )
-        self.add_project.clicked.connect(
-            lambda: window_manager.open_page(add_project, page_names.PROJECT)
-        )
-        self.add_group.clicked.connect(
-            lambda: window_manager.open_page(add_group, page_names.GROUP)
-        )
-        self.add_task.clicked.connect(
-            lambda: window_manager.open_page(add_task, page_names.TASK)
-        )
-        self.make_report.clicked.connect(report_manager.make_report)
+        self.reload.clicked.connect(self.update_task_containers)
 
     def closeEvent(self, event):
-        """Закриття всіх активних вікон при закритті."""
         window_manager.close_all_active_windows()
         event.accept()

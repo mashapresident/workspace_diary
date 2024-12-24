@@ -23,6 +23,11 @@ class task_container(QWidget):
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setStyleSheet("border: none;")
+        
+        # Set no scrollbars
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
 
         # Віджет для прокручуваного контенту
         self.scroll_content = QWidget()

@@ -461,7 +461,7 @@ class tasks_DAO:
             raise Exception(f"Database error: {e}")
 
     @staticmethod
-    def get_tasks(stage: str, proj: project, target_role: str):
+    def get_tasks(stage: str, proj: project, target_role: roles_list):
         """
         Повертає завдання для відповідного проекту залежно від ролі.
         """

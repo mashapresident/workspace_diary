@@ -61,19 +61,25 @@ class manager_page(QMainWindow):
 
         # Контейнери задач
         self.assigned = task_container(
-            "to do", tasks_DAO.get_tasks("given", self.opened_project, "manager"), self
+            "to do",
+            tasks_DAO.get_tasks("given", self.opened_project, self.manager.role),
+            self,
         )
         self.process = task_container(
             "in the process",
-            tasks_DAO.get_tasks("in the process", self.opened_project, "manager"),
+            tasks_DAO.get_tasks(
+                "in the process", self.opened_project, self.manager.role
+            ),
             self,
         )
         self.done = task_container(
-            "done", tasks_DAO.get_tasks("done", self.opened_project, "manager"), self
+            "done",
+            tasks_DAO.get_tasks("done", self.opened_project, self.manager.role),
+            self,
         )
         self.checked = task_container(
             "checked",
-            tasks_DAO.get_tasks("checked", self.opened_project, "manager"),
+            tasks_DAO.get_tasks("checked", self.opened_project, self.manager.role),
             self,
         )
 
@@ -122,6 +128,7 @@ class manager_page(QMainWindow):
         self.right_layout.addWidget(self.process)
         self.right_layout.addWidget(self.done)
         self.right_layout.addWidget(self.checked)
+        
 
     @Slot()
     def handle_button_click(self):

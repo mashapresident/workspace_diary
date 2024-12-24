@@ -84,3 +84,4 @@ class task_view(QWidget):
     def open_edit_task(self, task: task):
         from managers.window_manager import window_manager
         window_manager.open_edit_page(task)
+
