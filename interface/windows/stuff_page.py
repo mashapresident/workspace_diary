@@ -27,13 +27,14 @@ class stuff_page(QMainWindow):
         self.main_layout = QVBoxLayout(self.centralwidget)
 
         # Привітальне повідомлення
-        self.label = text(f"Вітаємо, {self.manager.fullname}", 18, "white")
+        self.label = text(f"Вітаємо, {self.stuff.fullname}", 18, "white")
 
         # Іконки для верхніх кнопок
         self.reload = icon_button("./interface/assets/reload.png")
-        
+
         # Список проєктів і кнопки
-        self.projects_list = project_DAO.get_projects_by_stuff_id(self.stuff.id)
+        self.projects_list = project_DAO.get_all_projects()
+        # self.projects_list = project_DAO.get_projects_by_stuff_id(self.stuff.id)
         self.button_widgets = []
 
         # Ініціалізація лівого лейауту для списку проєктів
@@ -54,7 +55,9 @@ class stuff_page(QMainWindow):
 
         # Контейнери задач
         self.assigned = task_container(
-            "to do", tasks_DAO.get_tasks("given", self.opened_project, self.stuff.role), self
+            "to do",
+            tasks_DAO.get_tasks("given", self.opened_project, self.stuff.role),
+            self,
         )
         self.process = task_container(
             "in the process",
@@ -62,7 +65,9 @@ class stuff_page(QMainWindow):
             self,
         )
         self.done = task_container(
-            "done", tasks_DAO.get_tasks("done", self.opened_project, self.stuff.role), self
+            "done",
+            tasks_DAO.get_tasks("done", self.opened_project, self.stuff.role),
+            self,
         )
         self.checked = task_container(
             "checked",
