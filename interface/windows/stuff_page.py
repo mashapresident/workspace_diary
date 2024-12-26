@@ -11,7 +11,7 @@ from database.tables import stuff
 from interface.widgets.buttons import icon_button, list_button
 from interface.widgets.task_container import task_container
 from interface.widgets.text import text
-from managers.DAO_classes import project_DAO, tasks_DAO
+from managers.DAO_classes import project_DAO, stuff_group_DAO, tasks_DAO
 from managers.window_manager import window_manager
 
 
@@ -33,8 +33,8 @@ class stuff_page(QMainWindow):
         self.reload = icon_button("./interface/assets/reload.png")
 
         # Список проєктів і кнопки
-        self.projects_list = project_DAO.get_all_projects()
-        # self.projects_list = project_DAO.get_projects_by_stuff_id(self.stuff.id)
+        self.group_list = stuff_group_DAO.get_group_ids_by_staff_id(self.stuff.id)
+        self.projects_list = project_DAO.get_projects_by_group_ids(self.group_list)
         self.button_widgets = []
 
         # Ініціалізація лівого лейауту для списку проєктів

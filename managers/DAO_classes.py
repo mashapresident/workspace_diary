@@ -231,18 +231,18 @@ class project_DAO:
             print(f"Failed to fetch project by customer id: {e}")
             return None
 
+    @staticmethod
+    def get_projects_by_group_ids(group_ids: list[int]):
+        try:
+            with session_factory() as session:
+                projects = (
+                    session.query(project).filter(project.group_id.in_(group_ids)).all()
+                )
+                return projects
+        except Exception as e:
+            print(f"Failed to fetch projects by group IDs: {e}")
+            return []
 
-    # @staticmethod
-    # def get_projects_by_stuff_id(id: int):
-    #     groups_DAO.
-    #     try:
-    #         with session_factory() as session:
-    #             return session.query(project).filter_by(group_id = ).first().id
-    #     except Exception as e:
-    #         print(f"Failed to fetch project by customer id: {e}")
-    #         return None
-    
-    
     @staticmethod
     def get_name_by_id(project_id: int):
         print(project_id)
@@ -301,7 +301,6 @@ class project_DAO:
         except Exception as e:
             return None
 
-
     @staticmethod
     def get_first_project():
         try:
@@ -326,7 +325,6 @@ class project_DAO:
 
 class stuff_group_DAO:
     @staticmethod
-    @staticmethod
     def add_stuff_to_group(staff_id: int, group_id: int):
         try:
             st_gr = stuff_group(stuff_id=staff_id, group_id=group_id)
@@ -335,6 +333,21 @@ class stuff_group_DAO:
                 session.commit()
         except Exception as e:
             session.rollback()
+
+    @staticmethod
+    def get_group_ids_by_staff_id(staff_id: int):
+        try:
+            with session_factory() as session:
+                group_ids = (
+                    session.query(stuff_group.group_id)
+                    .filter(stuff_group.stuff_id == staff_id)
+                    .all()
+                )
+                # Повертаємо лише список ідентифікаторів
+                return [group_id[0] for group_id in group_ids]
+        except Exception as e:
+            print(f"Error fetching group ids for staff_id {staff_id}: {e}")
+            return []
 
 
 class groups_DAO:
@@ -427,7 +440,7 @@ class tasks_DAO:
                 task.next_stage(id)
         except Exception as e:
             raise Exception(f"Database error: {e}")
-        
+
     @staticmethod
     def delete_task(task_id):
         """Видаляє завдання з бази даних за його ID."""
