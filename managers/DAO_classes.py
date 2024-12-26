@@ -421,6 +421,14 @@ class tasks_DAO:
             raise Exception(f"Database error: {e}")
 
     @staticmethod
+    def to_next_stage(task: task, id: int = -1):
+        try:
+            with session_factory() as session:
+                task.next_stage(id)
+        except Exception as e:
+            raise Exception(f"Database error: {e}")
+        
+    @staticmethod
     def delete_task(task_id):
         """Видаляє завдання з бази даних за його ID."""
         try:
