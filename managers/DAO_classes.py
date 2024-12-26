@@ -486,6 +486,7 @@ class tasks_DAO:
         """
         Повертає завдання для відповідного проекту залежно від ролі.
         """
+        print(target_role)
         if not proj:
             return []
         try:
@@ -496,7 +497,7 @@ class tasks_DAO:
                 # Базовий фільтр за проектом
                 query = session.query(task).filter_by(project_id=proj.id, stage=stage)
                 if target_role.lower() != "manager":
-                    query = query.filter_by(role=target_role)
+                    query = query.filter_by(target_role=target_role)
                 tasks = query.order_by(task.deadline).all()
                 print(f"Found {len(tasks)} tasks")
                 return tasks

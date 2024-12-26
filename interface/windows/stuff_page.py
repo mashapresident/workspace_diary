@@ -52,7 +52,6 @@ class stuff_page(QMainWindow):
             button.clicked.connect(self.handle_button_click)
             self.button_widgets.append(button)
             self.left_layout.addWidget(button)
-
         # Контейнери задач
         self.assigned = task_container(
             "to do",
@@ -145,16 +144,16 @@ class stuff_page(QMainWindow):
     def update_task_containers(self):
         """Оновлює контейнери задач для вибраного проєкту."""
         self.assigned.update_tasks(
-            tasks_DAO.get_tasks("given", self.opened_project, "manager")
+            tasks_DAO.get_tasks("given", self.opened_project, self.stuff.role)
         )
         self.process.update_tasks(
-            tasks_DAO.get_tasks("in the process", self.opened_project, "manager")
+            tasks_DAO.get_tasks("in the process", self.opened_project, self.stuff.role)
         )
         self.done.update_tasks(
-            tasks_DAO.get_tasks("done", self.opened_project, "manager")
+            tasks_DAO.get_tasks("done", self.opened_project, self.stuff.role)
         )
         self.checked.update_tasks(
-            tasks_DAO.get_tasks("checked", self.opened_project, "manager")
+            tasks_DAO.get_tasks("checked", self.opened_project, self.stuff.role)
         )
 
     def connect_buttons(self):
