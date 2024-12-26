@@ -425,6 +425,7 @@ class tasks_DAO:
         try:
             with session_factory() as session:
                 task.next_stage(id)
+                session.commit()
         except Exception as e:
             raise Exception(f"Database error: {e}")
         
