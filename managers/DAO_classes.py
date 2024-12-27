@@ -434,10 +434,18 @@ class tasks_DAO:
             raise Exception(f"Database error: {e}")
 
     @staticmethod
-    def to_next_stage(task: task, id: int = -1):
+    def to_next_stage(task_id, user_id=-1):
+        """Переводить завдання на наступну стадію."""
         try:
             with session_factory() as session:
-                task.next_stage(id)
+                task_obj = session.query(task).get(task_id)
+                if not task_obj:
+                    raise Exception(f"Task with ID {task_id} not found.")
+
+                if task_obj.next_stage(user_id):
+                    session.commit()  # Фіксуємо зміни у базі даних
+                else:
+                    raise Exception("Failed to move task to the next stage.")
         except Exception as e:
             raise Exception(f"Database error: {e}")
 

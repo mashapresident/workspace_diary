@@ -220,20 +220,20 @@ class task(Base):
         self.comment = comment
         self.stage = stage  # Використання параметра
 
-    def next_stage(self, id = -1):
+    def next_stage(self, id=-1):
+        """Оновлює стадію задачі."""
         if self.stage == "given" and id == -1:
             self.stage = "in the process"
             return True
         elif self.stage == "in the process" and id != -1:
             self.stage = "done"
-            self.stuff = id
+            self.is_done = id  # Зберігаємо ID, хто завершив завдання
             return True
         elif self.stage == "done" and id != -1:
             self.stage = "checked"
-            self.stuff1 = id
+            self.is_checked = id  # Зберігаємо ID, хто перевірив завдання
             return True
-        else:
-            return False
+        return False
             
 class zoom(Base):
     __tablename__ = "zoom"

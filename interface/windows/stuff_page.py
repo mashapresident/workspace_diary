@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
 
 from database.tables import stuff
 from interface.widgets.buttons import icon_button, list_button
-from interface.widgets.task_container import task_container
+from interface.widgets.task_container import task_container, task_container_todo, task_container_process, task_container_done
 from interface.widgets.text import text
 from managers.DAO_classes import project_DAO, stuff_group_DAO, tasks_DAO
 from managers.window_manager import window_manager
@@ -53,22 +53,24 @@ class stuff_page(QMainWindow):
             self.button_widgets.append(button)
             self.left_layout.addWidget(button)
         # Контейнери задач
-        self.assigned = task_container(
+        self.assigned = task_container_todo(
             "to do",
             tasks_DAO.get_tasks("given", self.opened_project, self.stuff.role),
             self,
         )
-        self.process = task_container(
+        self.process = task_container_process(
             "in the process",
             tasks_DAO.get_tasks("in the process", self.opened_project, self.stuff.role),
+            self.stuff,
             self,
         )
-        self.done = task_container(
+        self.done = task_container_process(
             "done",
             tasks_DAO.get_tasks("done", self.opened_project, self.stuff.role),
+            self.stuff,
             self,
         )
-        self.checked = task_container(
+        self.checked = task_container_done(
             "checked",
             tasks_DAO.get_tasks("checked", self.opened_project, self.stuff.role),
             self,
@@ -147,17 +149,16 @@ class stuff_page(QMainWindow):
             tasks_DAO.get_tasks("given", self.opened_project, self.stuff.role)
         )
         self.process.update_tasks(
-            tasks_DAO.get_tasks("in the process", self.opened_project, self.stuff.role)
+            tasks_DAO.get_tasks("in the process", self.opened_project, self.stuff.role), self.stuff
         )
         self.done.update_tasks(
-            tasks_DAO.get_tasks("done", self.opened_project, self.stuff.role)
+            tasks_DAO.get_tasks("done", self.opened_project, self.stuff.role), self.stuff
         )
         self.checked.update_tasks(
             tasks_DAO.get_tasks("checked", self.opened_project, self.stuff.role)
         )
 
     def connect_buttons(self):
-
         self.reload.clicked.connect(self.update_task_containers)
 
     def closeEvent(self, event):
