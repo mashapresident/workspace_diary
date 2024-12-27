@@ -221,7 +221,7 @@ class task(Base):
         self.stage = stage  # Використання параметра
 
     def next_stage(self, id = -1):
-        if self.stage == "given" and id == -1:
+        if self.stage == "given":
             self.stage = "in the process"
             return True
         elif self.stage == "in the process" and id != -1:
