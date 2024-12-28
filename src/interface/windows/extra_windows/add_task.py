@@ -11,19 +11,24 @@ from interface.widgets.qlines import (
     role_choice,
 )
 from managers.DAO_classes import project_DAO, roles_DAO, tasks_DAO
+from managers.resource_path import resource_path
 
 
 class add_task(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.back_button = icon_button("./interface/assets/back_button.png")
+        self.back_button = icon_button(
+            resource_path.get_path("interface/assets/back_button.png")
+        )
         self.project_picker = project_choice(project_DAO.get_all_projects())
         self.role_dropdown = role_choice(roles_DAO.get_stuff_roles())
         self.deadline_picker = datepicker()
         self.comment_input = comment_line("Залиште коментар")
         # Кнопки
         self.add_button = button("Додати завдання")
-        self.back_button = icon_button("./interface/assets/back_button.png")
+        self.back_button = icon_button(
+            resource_path.get_path("interface/assets/back_button.png")
+        )
 
         self.add_widgets()
         self.connect_buttons()

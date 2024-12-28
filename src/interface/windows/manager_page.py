@@ -13,6 +13,7 @@ from interface.widgets.task_container import task_container
 from interface.widgets.text import text
 from interface.windows.extra_windows.page_names import page_names
 from managers.DAO_classes import project_DAO, tasks_DAO
+from managers.resource_path import resource_path
 from managers.window_manager import window_manager
 
 
@@ -31,13 +32,25 @@ class manager_page(QMainWindow):
         self.label = text(f"Вітаємо, {self.manager.fullname}", 18, "white")
 
         # Іконки для верхніх кнопок
-        self.reload = icon_button("./interface/assets/reload.png")
-        self.add_stuff = icon_button("./interface/assets/add_stuff.png")
-        self.add_customer = icon_button("./interface/assets/add_stuff.png")
-        self.add_project = icon_button("./interface/assets/add_project.png")
-        self.add_group = icon_button("./interface/assets/add_group.png")
-        self.make_report = icon_button("./interface/assets/make_report.png")
-        self.add_task = icon_button("./interface/assets/add_task.png")
+        self.reload = icon_button(resource_path.get_path("interface/assets/reload.png"))
+        self.add_stuff = icon_button(
+            resource_path.get_path("interface/assets/add_stuff.png")
+        )
+        self.add_customer = icon_button(
+            resource_path.get_path("interface/assets/add_stuff.png")
+        )
+        self.add_project = icon_button(
+            resource_path.get_path("interface/assets/add_project.png")
+        )
+        self.add_group = icon_button(
+            resource_path.get_path("interface/assets/add_group.png")
+        )
+        self.make_report = icon_button(
+            resource_path.get_path("interface/assets/make_report.png")
+        )
+        self.add_task = icon_button(
+            resource_path.get_path("interface/assets/add_task.png")
+        )
 
         # Список проєктів і кнопки
         self.projects_list = project_DAO.get_all_projects()
@@ -128,7 +141,6 @@ class manager_page(QMainWindow):
         self.right_layout.addWidget(self.process)
         self.right_layout.addWidget(self.done)
         self.right_layout.addWidget(self.checked)
-        
 
     @Slot()
     def handle_button_click(self):

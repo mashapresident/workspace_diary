@@ -13,6 +13,7 @@ from interface.widgets.qlines import parent_line
 from managers.DAO_classes import stuff_DAO
 from managers.extra_windows_manager import extra_windows_manager
 from managers.report_manager import report_manager
+from managers.resource_path import resource_path
 
 
 class add_report(QMainWindow):
@@ -28,7 +29,9 @@ class add_report(QMainWindow):
         self.verticalLayoutWidget.setSpacing(20)
         self.verticalLayoutWidget.setContentsMargins(20, 60, 20, 60)
 
-        self.back_button = icon_button("./interface/assets/back_button.png")
+        self.back_button = icon_button(
+            resource_path.get_path("interface/assets/back_button.png")
+        )
         self.list = QListWidget()
         self.list.setFixedWidth(800)
         self.list.setSelectionMode(QListWidget.MultiSelection)

@@ -10,12 +10,15 @@ from interface.widgets.qlines import (
 )
 from managers.DAO_classes import customer_DAO, groups_DAO
 from managers.extra_windows_manager import extra_windows_manager
+from managers.resource_path import resource_path
 
 
 class add_project(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.back_button = icon_button("./interface/assets/back_button.png")
+        self.back_button = icon_button(
+            resource_path.get_path("interface/assets/back_button.png")
+        )
         self.name_line = parent_line("Назва")
         self.group = groups_choice(groups_DAO.get_groups())
         self.customer = customer_choice(customer_DAO.get_all_customers())

@@ -12,6 +12,7 @@ from interface.widgets.buttons import button, icon_button
 from interface.widgets.qlines import parent_line
 from managers.DAO_classes import stuff_DAO
 from managers.extra_windows_manager import extra_windows_manager
+from managers.resource_path import resource_path
 
 
 class add_group(QMainWindow):
@@ -27,7 +28,9 @@ class add_group(QMainWindow):
         self.verticalLayoutWidget.setSpacing(20)
         self.verticalLayoutWidget.setContentsMargins(20, 60, 20, 60)
 
-        self.back_button = icon_button("./interface/assets/back_button.png")
+        self.back_button = icon_button(
+            resource_path.get_path("interface/assets/back_button.png")
+        )
         self.name_of_group = parent_line("Назва групи")
         self.group_list = QListWidget()
         self.group_list.setFixedWidth(800)

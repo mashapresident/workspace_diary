@@ -11,12 +11,15 @@ from interface.widgets.qlines import (
 )
 from managers.DAO_classes import roles_DAO
 from managers.extra_windows_manager import extra_windows_manager
+from managers.resource_path import resource_path
 
 
 class add_stuff(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.back_button = icon_button("./interface/assets/back_button.png")
+        self.back_button = icon_button(
+            resource_path.get_path("interface/assets/back_button.png")
+        )
 
         self.surname_line = parent_line("Прізвище")
 

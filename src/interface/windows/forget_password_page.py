@@ -5,6 +5,7 @@ from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget
 from interface.widgets.buttons import button, icon_button
 from interface.widgets.qlines import email_line
 from interface.widgets.text import text
+from managers.resource_path import resource_path
 from managers.window_manager import window_manager
 
 
@@ -21,7 +22,9 @@ class forgot_password_page(QMainWindow):
         self.verticalLayoutWidget.setSpacing(30)
         self.verticalLayoutWidget.setContentsMargins(60, 60, 60, 60)
 
-        self.back_button = icon_button("./interface/assets/back_button.png")
+        self.back_button = icon_button(
+            resource_path.get_path("interface/assets/back_button.png")
+        )
 
         self.label_of_page = text("Відновлення доступу до акаунту", 28, "white")
 
@@ -55,4 +58,5 @@ class forgot_password_page(QMainWindow):
         )
 
         from interface.windows.login_page import login_page
+
         self.back_button.clicked.connect(lambda: window_manager.go_to_page(login_page))

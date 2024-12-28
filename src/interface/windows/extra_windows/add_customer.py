@@ -6,12 +6,15 @@ from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget
 from interface.widgets.buttons import button, icon_button
 from interface.widgets.qlines import datepicker, email_line, parent_line, phone_line
 from managers.extra_windows_manager import extra_windows_manager
+from managers.resource_path import resource_path
 
 
 class add_customer(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.back_button = icon_button("./interface/assets/back_button.png")
+        self.back_button = icon_button(
+            resource_path.get_path("interface/assets/back_button.png")
+        )
         self.surname_line = parent_line("Прізвище")
         self.name_line = parent_line("Імʼя")
         self.phone = phone_line()

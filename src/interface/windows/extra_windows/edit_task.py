@@ -12,6 +12,7 @@ from interface.widgets.qlines import (
     role_choice,
 )
 from managers.DAO_classes import project_DAO, roles_DAO, tasks_DAO
+from managers.resource_path import resource_path
 
 
 class edit_task(QMainWindow):
@@ -22,7 +23,9 @@ class edit_task(QMainWindow):
         self.task = task
 
         # Кнопки
-        self.back_button = icon_button("./interface/assets/back_button.png")
+        self.back_button = icon_button(
+            resource_path.get_path("interface/assets/back_button.png")
+        )
         self.add_button = button("Зберегти зміни")
 
         # Віджети для редагування

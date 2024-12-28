@@ -9,9 +9,15 @@ from PySide6.QtWidgets import (
 
 from database.tables import stuff
 from interface.widgets.buttons import icon_button, list_button
-from interface.widgets.task_container import task_container, task_container_todo, task_container_process, task_container_done
+from interface.widgets.task_container import (
+    task_container,
+    task_container_done,
+    task_container_process,
+    task_container_todo,
+)
 from interface.widgets.text import text
 from managers.DAO_classes import project_DAO, stuff_group_DAO, tasks_DAO
+from managers.resource_path import resource_path
 from managers.window_manager import window_manager
 
 
@@ -30,7 +36,7 @@ class stuff_page(QMainWindow):
         self.label = text(f"Вітаємо, {self.stuff.fullname}", 18, "white")
 
         # Іконки для верхніх кнопок
-        self.reload = icon_button("./interface/assets/reload.png")
+        self.reload = icon_button(resource_path.get_path("interface/assets/reload.png"))
 
         # Список проєктів і кнопки
         self.group_list = stuff_group_DAO.get_group_ids_by_staff_id(self.stuff.id)
@@ -149,10 +155,12 @@ class stuff_page(QMainWindow):
             tasks_DAO.get_tasks("given", self.opened_project, self.stuff.role)
         )
         self.process.update_tasks(
-            tasks_DAO.get_tasks("in the process", self.opened_project, self.stuff.role), self.stuff
+            tasks_DAO.get_tasks("in the process", self.opened_project, self.stuff.role),
+            self.stuff,
         )
         self.done.update_tasks(
-            tasks_DAO.get_tasks("done", self.opened_project, self.stuff.role), self.stuff
+            tasks_DAO.get_tasks("done", self.opened_project, self.stuff.role),
+            self.stuff,
         )
         self.checked.update_tasks(
             tasks_DAO.get_tasks("checked", self.opened_project, self.stuff.role)
