@@ -1,6 +1,6 @@
 # .gitignore
 config.py
 __pycache__/
-interface/pycache/
 .venv/
 reports/
+src/dist/main.exe
